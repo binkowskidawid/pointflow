@@ -1,135 +1,167 @@
-# Turborepo starter
+<div align="center">
+  <h1>⚡ PointFlow</h1>
+  <p><strong>The open-source loyalty platform you can self-host in 5 minutes.</strong></p>
+  <p>
+    <a href="https://github.com/binkowskidawid/pointflow/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
+    <a href="https://github.com/binkowskidawid/pointflow/actions"><img src="https://img.shields.io/github/actions/workflow/status/binkowskidawid/pointflow/ci.yml?label=CI" alt="CI" /></a>
+    <img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="Node" />
+    <img src="https://img.shields.io/badge/pnpm-10.x-orange" alt="pnpm" />
+    <img src="https://img.shields.io/badge/kafka-4.2%20KRaft-red" alt="Kafka" />
+    <img src="https://img.shields.io/badge/nestjs-11.x-e0234e" alt="NestJS" />
+  </p>
+</div>
 
-This Turborepo starter is maintained by the Turborepo core team.
+---
 
-## Using this example
+PointFlow is a free, open-source, self-hostable loyalty platform for small and medium businesses. Any business — a dental clinic, coffee shop, barbershop, or retail store — can run their own loyalty programme without paying for an external SaaS.
 
-Run the following command:
+> **Real problem, real niche.** Existing SaaS solutions (Smile.io, LoyaltyLion) cost hundreds of dollars per month. No good open-source alternatives exist. PointFlow fills that gap.
 
-```sh
-npx create-turbo@latest
-```
+## ✨ Features
 
-## What's inside?
+- 🏆 **Points & Tiers** — configurable points-per-visit rules with automatic tier progression
+- 🔔 **Real-time Notifications** — email alerts on points earned and tier changes
+- 📊 **Analytics Dashboard** — visit history, point balances, and tier distribution
+- 👤 **Customer Portal** — self-service portal for customers to track their rewards
+- 🔐 **JWT Auth** — stateless authentication with per-tenant isolation
+- 🐘 **Event-Driven Core** — built on Apache Kafka 4.2 KRaft (no Zookeeper!)
+- 🚀 **Self-hosted** — single `docker compose up` to run the entire stack
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+## 🏗️ Architecture
 
 ```
-cd my-turborepo
+Browser (Next.js 16)
+        │ HTTPS + JWT
+        ▼
+  API Gateway (NestJS 11, port 3001)
+  ├── Auth Service    (TCP, port 3003)
+  ├── Loyalty Engine  (TCP, port 3002)  ──► Kafka 4.2 KRaft
+  └── Analytics       (HTTP + Kafka, port 3004)
+                                              │
+                                    Notification Service
+                                      (Kafka consumer)
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+  All services ↔ CockroachDB v25.2 LTS via Drizzle ORM 0.45
 ```
 
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
+## 🛠️ Tech Stack
+
+| Layer           | Technology         | Version         |
+| --------------- | ------------------ | --------------- |
+| Monorepo        | Turborepo          | 2.8.12          |
+| Runtime         | Node.js            | 22.x LTS        |
+| Language        | TypeScript         | 5.9.x           |
+| Backend         | NestJS             | 11.1.x          |
+| Frontend        | Next.js + React    | 16.1.x + 19.2.x |
+| Database        | CockroachDB        | v25.2.13 LTS    |
+| ORM             | Drizzle ORM        | 0.45.x          |
+| Message Broker  | Apache Kafka KRaft | 4.2.0           |
+| Styling         | Tailwind CSS       | 4.x             |
+| Package Manager | pnpm               | 10.x            |
+
+> **Kafka 4.x = no Zookeeper.** Kafka 4.0 (March 2025) removed Zookeeper entirely. PointFlow uses KRaft mode — one container, zero extra coordination overhead.
+
+## 📁 Project Structure
 
 ```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+pointflow/
+├── apps/
+│   ├── web/              # Admin dashboard (Next.js 16, port 3000)
+│   └── portal/           # Customer self-service portal (Next.js 16, port 3005)
+├── services/
+│   ├── api-gateway/      # Public HTTP entry point (NestJS 11, port 3001)
+│   ├── loyalty-engine/   # Points & tiers logic (NestJS TCP, port 3002)
+│   ├── auth/             # JWT authentication (NestJS, port 3003)
+│   ├── notification/     # Email delivery (NestJS Kafka consumer)
+│   └── analytics/        # Statistics & reporting (NestJS HTTP + Kafka)
+├── packages/
+│   ├── typescript-config/ # Shared tsconfig (base / nextjs / nestjs)
+│   ├── eslint-config/    # Shared ESLint rules
+│   ├── shared-types/     # TypeScript interfaces & DTOs
+│   ├── drizzle-schemas/  # Database schemas
+│   └── kafka-contracts/  # Kafka event type definitions
+└── infrastructure/
+    ├── docker-compose.yml        # Dev stack
+    └── docker-compose.prod.yml   # Production stack
 ```
 
-### Develop
+## 🚀 Quick Start
 
-To develop all apps and packages, run the following command:
+### Prerequisites
 
-```
-cd my-turborepo
+- Node.js 22+ and pnpm 10+
+- Docker & Docker Compose v2
 
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+### 1. Clone & install
 
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+```bash
+git clone https://github.com/binkowskidawid/pointflow.git
+cd pointflow
+pnpm install
 ```
 
-### Remote Caching
+### 2. Start infrastructure
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
+```bash
+docker compose -f infrastructure/docker-compose.yml up -d
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+This starts: CockroachDB, Kafka 4.2 KRaft, MailHog (local email), and Kafka UI.
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+### 3. Configure environment
 
-```
-# With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
+```bash
+cp .env.example .env
+# Edit .env with your local values
 ```
 
-## Useful Links
+### 4. Run migrations
 
-Learn more about the power of Turborepo:
+```bash
+pnpm run db:migrate
+```
 
-- [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.dev/docs/reference/configuration)
-- [CLI Usage](https://turborepo.dev/docs/reference/command-line-reference)
+### 5. Start development
+
+```bash
+pnpm run dev
+```
+
+| Service         | URL                   |
+| --------------- | --------------------- |
+| Admin Dashboard | http://localhost:3000 |
+| API Gateway     | http://localhost:3001 |
+| Customer Portal | http://localhost:3005 |
+| Kafka UI        | http://localhost:8080 |
+| MailHog         | http://localhost:8025 |
+
+## 🗺️ Roadmap
+
+- [x] **Stage 1** — Monorepo foundation (Turborepo, shared packages, tsconfig)
+- [ ] **Stage 1** — Loyalty Engine (NestJS 11, Drizzle ORM, CockroachDB)
+- [ ] **Stage 1** — Admin Dashboard (Next.js 16)
+- [ ] **Stage 2** — Kafka 4.2 KRaft integration
+- [ ] **Stage 2** — API Gateway + JWT Auth
+- [ ] **Stage 2** — Notification Service
+- [ ] **Stage 3** — Analytics Service + Customer Portal
+- [ ] **Stage 3** — v1.0.0 release with `quickstart.sh`
+- [ ] **Stage 4** — WebSockets real-time dashboard
+- [ ] **Stage 4** — JavaScript/TypeScript SDK
+- [ ] **Stage 4** — Swagger API docs
+
+## 🤝 Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](./CONTRIBUTING.md) first.
+
+Good first issues to look for:
+
+- Adding new notification channels (SMS via Twilio)
+- Building a JavaScript SDK
+- Improving test coverage
+- Writing documentation
+
+## 📄 License
+
+MIT © [Dawid Bińkowski](https://github.com/binkowskidawid)
+
+See [LICENSE](./LICENSE) for details.

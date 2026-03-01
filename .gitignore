@@ -36,3 +36,18 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# AI
+.claude
+.gemini
+.cursorrules
+CLAUDE.md
+GEMINI.md
+
+# Docs
+.docs
+.learning
+
+# Editor
+.vscode
+.idea
