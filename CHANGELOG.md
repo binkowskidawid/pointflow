@@ -15,6 +15,10 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Shared TypeScript configurations: `base`, `nextjs`, `nestjs`
 - Shared ESLint configuration (`@pointflow/eslint-config`)
 - Project structure: `apps/`, `services/`, `packages/`, `infrastructure/`
+- `@pointflow/contracts` — shared TypeScript contracts package for inter-service DTOs and Kafka event types
+- Code quality toolchain: Prettier 3.x, Husky 9.x pre-commit hooks, lint-staged
+- GitHub Actions CI pipeline (`quality` + `build` jobs, Node 24, pnpm 10)
+- GitHub branch-protection rules: required CI check, required code review, auto-delete on merge
 
 ---
 

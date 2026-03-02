@@ -49,7 +49,7 @@ Browser (Next.js 16)
 | Layer           | Technology         | Version         |
 | --------------- | ------------------ | --------------- |
 | Monorepo        | Turborepo          | 2.8.12          |
-| Runtime         | Node.js            | 22.x LTS        |
+| Runtime         | Node.js            | 24.x LTS        |
 | Language        | TypeScript         | 5.9.x           |
 | Backend         | NestJS             | 11.1.x          |
 | Frontend        | Next.js + React    | 16.1.x + 19.2.x |
@@ -89,7 +89,7 @@ pointflow/
 
 ### Prerequisites
 
-- Node.js 22+ and pnpm 10+
+- Node.js 24+ and pnpm 10+
 - Docker & Docker Compose v2
 
 ### 1. Clone & install
@@ -138,6 +138,8 @@ pnpm run dev
 ## 🗺️ Roadmap
 
 - [x] **Stage 1** — Monorepo foundation (Turborepo, shared packages, tsconfig)
+- [x] **Stage 1** — `@pointflow/contracts` shared package (inter-service DTOs, Kafka event types)
+- [x] **Stage 1** — Code quality toolchain (Prettier, Husky, lint-staged, GitHub Actions CI)
 - [ ] **Stage 1** — Loyalty Engine (NestJS 11, Drizzle ORM, CockroachDB)
 - [ ] **Stage 1** — Admin Dashboard (Next.js 16)
 - [ ] **Stage 2** — Kafka 4.2 KRaft integration

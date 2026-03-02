@@ -16,7 +16,8 @@ Closes #<!-- issue number -->
 
 ## Checklist
 
-- [ ] `pnpm run check-types` passes with no errors
+- [ ] `pnpm run format:check` passes with no errors
+- [ ] `pnpm run typecheck` passes with no errors
 - [ ] `pnpm run lint` passes with no errors
 - [ ] `pnpm run build` succeeds
 - [ ] Tests added or updated (if applicable)
