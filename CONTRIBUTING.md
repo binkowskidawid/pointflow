@@ -46,7 +46,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 5. **Run checks before pushing:**
 
    ```bash
-   pnpm run check-types
+   pnpm run typecheck
    pnpm run lint
    pnpm run build
    ```
