@@ -1,0 +1,16 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+dist
+.next
+**/.next
+**/dist
+
+# Generated files
+**/drizzle
+pnpm-lock.yaml
+
+# Turbo
+.turbo

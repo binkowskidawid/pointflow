@@ -4,8 +4,8 @@
   "compilerOptions": {
     "module": "CommonJS",
     "moduleResolution": "Node",
-    "target": "ES2022",
-    "lib": ["ES2022"],
+    "target": "ES2024",
+    "lib": ["ES2024"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
