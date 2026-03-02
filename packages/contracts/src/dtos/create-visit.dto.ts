@@ -1,8 +1,8 @@
-import { Currency } from "../enums";
+import { Currency } from '../enums'
 
 export type CreateVisitDto = {
-  cardId: string;
-  userId: string;
-  receiptAmount: number;
-  receiptCurrency: Currency;
-};
+  cardId: string
+  userId: string
+  receiptAmount: number
+  receiptCurrency: Currency
+}

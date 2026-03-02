@@ -138,6 +138,8 @@ pnpm run dev
 ## 🗺️ Roadmap
 
 - [x] **Stage 1** — Monorepo foundation (Turborepo, shared packages, tsconfig)
+- [x] **Stage 1** — `@pointflow/contracts` shared package (inter-service DTOs, Kafka event types)
+- [x] **Stage 1** — Code quality toolchain (Prettier, Husky, lint-staged, GitHub Actions CI)
 - [ ] **Stage 1** — Loyalty Engine (NestJS 11, Drizzle ORM, CockroachDB)
 - [ ] **Stage 1** — Admin Dashboard (Next.js 16)
 - [ ] **Stage 2** — Kafka 4.2 KRaft integration

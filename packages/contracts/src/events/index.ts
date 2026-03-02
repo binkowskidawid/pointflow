@@ -1,1 +1,1 @@
-export * from "./points-earned.event";
+export * from './points-earned.event'

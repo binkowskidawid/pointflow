@@ -19,11 +19,7 @@
     "typescript": "5.9.3"
   },
   "lint-staged": {
-    "**/*.{ts,tsx}": [
-      "prettier --write",
-      "eslint --fix --max-warnings=0"
-    ],
-    "**/*.{md,json,css}": [
+    "**/*.{ts,tsx,md,json,css}": [
       "prettier --write"
     ]
   },

@@ -43,13 +43,17 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
 4. **Make your changes.** Follow the code standards below.
 
-5. **Run checks before pushing:**
+5. **Run checks before pushing** (mirrors CI exactly):
 
    ```bash
-   pnpm run typecheck
+   pnpm run format:check
    pnpm run lint
+   pnpm run typecheck
+   pnpm run test
    pnpm run build
    ```
+
+   > The pre-commit hook (`husky` + `lint-staged`) runs Prettier automatically on staged files — `format:check` above is a full-repo sanity check.
 
 6. **Commit** using Conventional Commits:
 
