@@ -4,7 +4,7 @@
   <p>
     <a href="https://github.com/binkowskidawid/pointflow/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
     <a href="https://github.com/binkowskidawid/pointflow/actions"><img src="https://img.shields.io/github/actions/workflow/status/binkowskidawid/pointflow/ci.yml?label=CI" alt="CI" /></a>
-    <img src="https://img.shields.io/badge/node-%3E%3D22-brightgreen" alt="Node" />
+    <img src="https://img.shields.io/badge/node-%3E%3D24-brightgreen" alt="Node" />
     <img src="https://img.shields.io/badge/pnpm-10.x-orange" alt="pnpm" />
     <img src="https://img.shields.io/badge/kafka-4.2%20KRaft-red" alt="Kafka" />
     <img src="https://img.shields.io/badge/nestjs-11.x-e0234e" alt="NestJS" />
