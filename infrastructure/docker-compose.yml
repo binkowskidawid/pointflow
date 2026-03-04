@@ -1,0 +1,19 @@
+services:
+  cockroachdb:
+    image: cockroachdb/cockroach:v25.2.13
+    container_name: pointflow-db
+    command: start-single-node --insecure --advertise-addr=cockroachdb
+    ports:
+      - '26257:26257' # SQL wire protocol (PostgreSQL compatible)
+      - '8080:8080'   # CockroachDB Admin UI
+    volumes:
+      - cockroach-data:/cockroach/cockroach-data
+    healthcheck:
+      test: ['CMD', 'cockroach', 'sql', '--insecure', '--execute=SELECT 1']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+volumes:
+  cockroach-data:

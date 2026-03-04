@@ -26,6 +26,8 @@ export default {
         'ci',
         'quality-tools',
         'deps',
+        // docs
+        'docs',
       ],
     ],
     'scope-empty': [1, 'never'],
