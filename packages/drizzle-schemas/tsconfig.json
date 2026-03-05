@@ -1,6 +1,7 @@
 {
   "extends": "@pointflow/typescript-config/base.json",
   "compilerOptions": {
+    "outDir": "./dist",
     "types": ["node"]
   },
   "include": ["src", "drizzle.config.ts"],

@@ -23,6 +23,7 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Code quality toolchain: Prettier 3.x, Husky 9.x pre-commit hooks, lint-staged
 - GitHub Actions CI pipeline (`quality` + `build` jobs, Node 24, pnpm 10)
 - GitHub branch-protection rules: required CI check, required code review, auto-delete on merge
+- `services/loyalty-engine` — NestJS 11.1.16 HTTP service scaffold (AppModule, ValidationPipe, ConfigModule global, no-semis style aligned with monorepo)
 
 ### Fixed
 
