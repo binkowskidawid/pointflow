@@ -1,0 +1,1 @@
+ALTER TABLE "visits" ADD COLUMN "card_id" uuid NOT NULL;

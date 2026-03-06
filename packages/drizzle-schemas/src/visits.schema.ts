@@ -4,6 +4,7 @@ import type { PromotionSnapshot } from '@pointflow/types'
 export const visits = pgTable('visits', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').notNull(),
+  cardId: uuid('card_id').notNull(),
   amountSpent: integer('amount_spent').notNull(),
   currency: varchar('currency', { length: 3 }).notNull(),
   pointsEarned: integer('points_earned').notNull(),

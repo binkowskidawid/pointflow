@@ -9,6 +9,8 @@
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
+    "db:generate": "pnpm --filter @pointflow/drizzle-schemas db:generate",
+    "db:migrate": "pnpm --filter @pointflow/drizzle-schemas db:migrate",
     "prepare": "husky"
   },
   "devDependencies": {

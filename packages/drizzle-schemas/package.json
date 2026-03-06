@@ -3,23 +3,29 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts"
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
   },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "dev": "tsc --watch",
     "db:generate": "drizzle-kit generate",
-    "db:push": "drizzle-kit push",
+    "db:migrate": "npx tsx src/migrate.ts",
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
     "@pointflow/contracts": "workspace:*",
     "@pointflow/types": "workspace:*",
-    "drizzle-orm": "^0.45.1"
+    "dotenv": "^17.3.1",
+    "drizzle-orm": "^0.45.1",
+    "postgres": "^3.4.8"
   },
   "devDependencies": {
     "@pointflow/typescript-config": "workspace:*",
@@ -27,6 +33,7 @@
     "@types/pg": "^8.18.0",
     "drizzle-kit": "^0.31.9",
     "pg": "^8.19.0",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   }
 }
