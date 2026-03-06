@@ -23,9 +23,18 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Code quality toolchain: Prettier 3.x, Husky 9.x pre-commit hooks, lint-staged
 - GitHub Actions CI pipeline (`quality` + `build` jobs, Node 24, pnpm 10)
 - GitHub branch-protection rules: required CI check, required code review, auto-delete on merge
-- `services/loyalty-engine` — NestJS 11.1.16 HTTP service scaffold (AppModule, ValidationPipe, ConfigModule global, no-semis style aligned with monorepo)
+- `services/loyalty-engine` — NestJS 11.1.16 HTTP service with `VisitsModule` (full request-to-persistence flow)
+- `PointsCalculator` — domain logic service with comprehensive unit tests (vitest)
+- `DatabaseModule` — Drizzle ORM integration using `postgres.js` driver for optimized CockroachDB performance
+- `nestjs-pino` integration — enterprise-grade JSON logging with `pino-pretty` development support and conditional sensitive data (body) logging
+- Custom migration runner (`packages/drizzle-schemas/src/migrate.ts`) to handle CockroachDB's specific DDL and introspection behaviors
+- Monorepo root aliases for `db:generate` and `db:migrate` (pnpm filter shortcuts)
 
 ### Fixed
+
+- `packages/drizzle-schemas` build output: included `rootDir` and corrected `package.json` exports to support both ESM and CJS NestJS runtime requirements
+- CockroachDB/Drizzle compatibility: switched from `drizzle-kit push` to file-based migrations via `postgres.js` to avoid `regtype[]` parsing errors during DB introspection
+- `vitest` CI stability: added `--passWithNoTests` flag to prevent job failures in packages without test files
 
 - `turbo.json`: `typecheck.dependsOn` changed from `^typecheck` to `^build` to ensure `dist/*.d.ts` files exist before cross-package TypeScript resolution
 
