@@ -106,7 +106,7 @@ pnpm install
 docker compose -f infrastructure/docker-compose.yml up -d
 ```
 
-This starts: CockroachDB, Kafka 4.2 KRaft, MailHog (local email), and Kafka UI.
+This starts: CockroachDB (autocreated `pointflow` DB and `pointflow_user`), Kafka 4.2 KRaft, MailHog (local email), and Kafka UI.
 
 ### 3. Configure environment
 
@@ -127,20 +127,20 @@ pnpm run db:migrate
 pnpm run dev
 ```
 
-| Service         | URL                   |
-| --------------- | --------------------- |
-| Admin Dashboard | http://localhost:3000 |
-| API Gateway     | http://localhost:3001 |
-| Customer Portal | http://localhost:3005 |
-| Kafka UI        | http://localhost:8080 |
-| MailHog         | http://localhost:8025 |
+| Service         | URL                     |
+| --------------- | ----------------------- |
+| Admin Dashboard | <http://localhost:3000> |
+| API Gateway     | <http://localhost:3001> |
+| Customer Portal | <http://localhost:3005> |
+| Kafka UI        | <http://localhost:8080> |
+| MailHog         | <http://localhost:8025> |
 
 ## 🗺️ Roadmap
 
 - [x] **Stage 1** — Monorepo foundation (Turborepo, shared packages, tsconfig)
 - [x] **Stage 1** — `@pointflow/contracts` shared package (inter-service DTOs, Kafka event types)
 - [x] **Stage 1** — Code quality toolchain (Prettier, Husky, lint-staged, GitHub Actions CI)
-- [ ] **Stage 1** — Loyalty Engine (NestJS 11, Drizzle ORM, CockroachDB)
+- [x] **Stage 1** — Loyalty Engine (NestJS 11, Drizzle ORM, CockroachDB)
 - [ ] **Stage 1** — Admin Dashboard (Next.js 16)
 - [ ] **Stage 2** — Kafka 4.2 KRaft integration
 - [ ] **Stage 2** — API Gateway + JWT Auth

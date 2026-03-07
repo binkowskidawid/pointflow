@@ -15,6 +15,20 @@
       "when": 1772808123150,
       "tag": "0001_confused_justice",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772887448473,
+      "tag": "0002_overjoyed_orphan",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772887671486,
+      "tag": "0003_nasty_toxin",
+      "breakpoints": true
     }
   ]
 }

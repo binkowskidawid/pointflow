@@ -35,8 +35,16 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `packages/drizzle-schemas` build output: included `rootDir` and corrected `package.json` exports to support both ESM and CJS NestJS runtime requirements
 - CockroachDB/Drizzle compatibility: switched from `drizzle-kit push` to file-based migrations via `postgres.js` to avoid `regtype[]` parsing errors during DB introspection
 - `vitest` CI stability: added `--passWithNoTests` flag to prevent job failures in packages without test files
-
 - `turbo.json`: `typecheck.dependsOn` changed from `^typecheck` to `^build` to ensure `dist/*.d.ts` files exist before cross-package TypeScript resolution
+- `loyalty-engine` testing: added `vitest.config.ts` to exclude `dist/` folder, resolving CommonJS/ESM import conflicts during test runs
+
+### Changed
+
+- **Financial Precision**: Switched `visits.amount_spent` from `real` to `integer` (cents) to ensure 100% precision in financial calculations.
+- `PointsCalculator`: Updated logic and unit tests to operate on cents (smallest currency unit).
+- **Toolchain Upgrade**: Updated ESLint to v10, `typescript-eslint` to v8.56.1, and `turbo` to v2.8.14 across the workspace.
+- **Security**: Moved from using `root` database user to a dedicated `pointflow_user` with restricted permissions.
+- **Node.js Types**: Enforced `@types/node` at `^24.x` to strictly match the Node.js 24 LTS runtime strategy.
 
 ---
 
