@@ -4,16 +4,27 @@ services:
     container_name: pointflow-db
     command: start-single-node --insecure --advertise-addr=cockroachdb
     ports:
-      - '26257:26257' # SQL wire protocol (PostgreSQL compatible)
-      - '8080:8080'   # CockroachDB Admin UI
+      - "26257:26257" # SQL wire protocol (PostgreSQL compatible)
+      - "8080:8080" # CockroachDB Admin UI
     volumes:
       - cockroach-data:/cockroach/cockroach-data
     healthcheck:
-      test: ['CMD', 'cockroach', 'sql', '--insecure', '--execute=SELECT 1']
+      test: ["CMD", "cockroach", "sql", "--insecure", "--execute=SELECT 1"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 15s
+
+  db-init:
+    image: cockroachdb/cockroach:v25.2.13
+    container_name: pointflow-db-init
+    depends_on:
+      cockroachdb:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - |
+        cockroach sql --insecure --host=cockroachdb --execute="CREATE DATABASE IF NOT EXISTS pointflow; CREATE USER IF NOT EXISTS pointflow_user; GRANT ALL ON DATABASE pointflow TO pointflow_user;"
 
 volumes:
   cockroach-data:

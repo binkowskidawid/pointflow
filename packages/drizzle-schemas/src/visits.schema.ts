@@ -5,6 +5,7 @@ export const visits = pgTable('visits', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id').notNull(),
   cardId: uuid('card_id').notNull(),
+  // amountSpent in cents to avoid floating point errors e.g. 10.99 -> 1099
   amountSpent: integer('amount_spent').notNull(),
   currency: varchar('currency', { length: 3 }).notNull(),
   pointsEarned: integer('points_earned').notNull(),
