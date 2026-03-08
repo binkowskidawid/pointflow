@@ -6,3 +6,4 @@ packages:
 onlyBuiltDependencies:
   - '@nestjs/core'
   - esbuild
+  - sharp

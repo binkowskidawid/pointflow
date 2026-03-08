@@ -29,6 +29,10 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `nestjs-pino` integration — enterprise-grade JSON logging with `pino-pretty` development support and conditional sensitive data (body) logging
 - Custom migration runner (`packages/drizzle-schemas/src/migrate.ts`) to handle CockroachDB's specific DDL and introspection behaviors
 - Monorepo root aliases for `db:generate` and `db:migrate` (pnpm filter shortcuts)
+- `apps/web` — Next.js 16 (App Router) frontend initialization with React 19 and Tailwind CSS 4.0
+- React Query v5 integration with `QueryClientProvider` and `ReactQueryDevtools`
+- Professional SEO metadata, Viewport, and custom Brand Identity (Icon/Favicon) system
+- Monorepo package integration: `@pointflow/web` now consumes `@pointflow/contracts` and `@pointflow/types` directly from source
 
 ### Fixed
 
