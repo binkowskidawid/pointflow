@@ -1,0 +1,34 @@
+{
+  "name": "@pointflow/web",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "@pointflow/contracts": "workspace:*",
+    "@pointflow/types": "workspace:*",
+    "@tanstack/react-query": "^5.x",
+    "axios": "^1.x",
+    "zod": "^4.x"
+  },
+  "devDependencies": {
+    "@pointflow/eslint-config": "workspace:*",
+    "@pointflow/typescript-config": "workspace:*",
+    "@tailwindcss/postcss": "^4",
+    "@tanstack/react-query-devtools": "^5",
+    "@types/node": "^24.x",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^10",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

@@ -1,3 +1,3 @@
-# `@turbo/eslint-config`
+# `@pointflow/eslint-config`
 
 Collection of internal eslint configurations.

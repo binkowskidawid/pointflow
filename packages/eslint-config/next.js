@@ -26,6 +26,7 @@ export const nextJsConfig = [
     "next-env.d.ts",
   ]),
   {
+    files: ["src/**/*.{ts,tsx,js,jsx}"],
     ...pluginReact.configs.flat.recommended,
     languageOptions: {
       ...pluginReact.configs.flat.recommended.languageOptions,
@@ -33,8 +34,12 @@ export const nextJsConfig = [
         ...globals.serviceworker,
       },
     },
+    settings: {
+      react: { version: "19.2" },
+    },
   },
   {
+    files: ["src/**/*.{ts,tsx,js,jsx}"],
     plugins: {
       "@next/next": pluginNext,
     },
@@ -44,10 +49,11 @@ export const nextJsConfig = [
     },
   },
   {
+    files: ["src/**/*.{ts,tsx,js,jsx}"],
     plugins: {
       "react-hooks": pluginReactHooks,
     },
-    settings: { react: { version: "detect" } },
+    settings: { react: { version: "19.2" } },
     rules: {
       ...pluginReactHooks.configs.recommended.rules,
       // React scope no longer necessary with new JSX transform.
