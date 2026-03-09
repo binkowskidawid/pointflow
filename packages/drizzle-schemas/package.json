@@ -18,7 +18,8 @@
     "dev": "tsc --watch",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx src/migrate.ts",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-kit studio",
+    "db:seed": "npx tsx src/seed.ts"
   },
   "dependencies": {
     "@pointflow/contracts": "workspace:*",
