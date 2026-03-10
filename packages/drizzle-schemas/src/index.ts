@@ -1,3 +1,5 @@
 export * from './visits.schema'
 export * from './loyalty-cards.schema'
 export * from './users.schema'
+export * from './tenants.schema'
+export * from './loyalty-settings.schema'

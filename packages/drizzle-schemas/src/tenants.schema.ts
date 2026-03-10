@@ -1,12 +1,12 @@
 import { pgTable, uuid, varchar, timestamp } from 'drizzle-orm/pg-core'
 
-export const users = pgTable('users', {
+export const tenants = pgTable('tenants', {
   id: uuid('id').defaultRandom().primaryKey(),
-  email: varchar('email', { length: 255 }).notNull().unique(),
   name: varchar('name', { length: 255 }).notNull(),
+  slug: varchar('slug', { length: 100 }).notNull().unique(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
-export type SelectUser = typeof users.$inferSelect
-export type InsertUser = typeof users.$inferInsert
+export type SelectTenant = typeof tenants.$inferSelect
+export type InsertTenant = typeof tenants.$inferInsert

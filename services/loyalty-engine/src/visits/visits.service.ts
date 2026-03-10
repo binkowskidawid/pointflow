@@ -27,6 +27,7 @@ export class VisitsService {
     return this.visitsRepository.create({
       id: randomUUID(),
       userId: dto.userId,
+      tenantId: dto.tenantId,
       cardId: dto.cardId,
       amountSpent: dto.receiptAmount,
       currency: dto.receiptCurrency,
