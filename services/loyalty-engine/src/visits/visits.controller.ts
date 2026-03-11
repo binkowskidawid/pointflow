@@ -1,4 +1,4 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common'
+import { Body, Controller, HttpCode, HttpStatus, Post, Get, Query } from '@nestjs/common'
 import { VisitsService } from './visits.service'
 import { CreateVisitDto } from '@pointflow/contracts'
 import type { Visit } from '@pointflow/types'
@@ -11,5 +11,10 @@ export class VisitsController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateVisitDto): Promise<Visit> {
     return this.visitsService.recordVisit(dto)
+  }
+
+  @Get()
+  async getAll(@Query('tenantId') tenantId: string): Promise<Visit[]> {
+    return this.visitsService.getAll({ tenantId })
   }
 }
