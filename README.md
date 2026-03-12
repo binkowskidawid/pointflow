@@ -141,7 +141,7 @@ pnpm run dev
 - [x] **Stage 1** — `@pointflow/contracts` shared package (inter-service DTOs, Kafka event types)
 - [x] **Stage 1** — Code quality toolchain (Prettier, Husky, lint-staged, GitHub Actions CI)
 - [x] **Stage 1** — Loyalty Engine (NestJS 11, Drizzle ORM, CockroachDB)
-- [ ] **Stage 1** — Admin Dashboard (Next.js 16)
+- [x] **Stage 1** — Admin Dashboard (Next.js 16 + React Query + Tailwind 4)
 - [ ] **Stage 2** — Kafka 4.2 KRaft integration
 - [ ] **Stage 2** — API Gateway + JWT Auth
 - [ ] **Stage 2** — Notification Service

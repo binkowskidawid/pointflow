@@ -15,7 +15,12 @@ async function bootstrap(): Promise<void> {
     }),
   )
 
-  const port = process.env.PORT ?? 3001
+  app.enableCors({
+    origin: process.env.CORS_ORIGIN ?? 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+  })
+
+  const port = process.env.PORT ?? 3002
   await app.listen(port)
   console.log(`Loyalty Engine running on port ${port}`)
 }
