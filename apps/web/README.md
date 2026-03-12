@@ -27,6 +27,7 @@ apps/web/
 ├── src/
 │   ├── app/            # Next.js App Router (Layouts, Pages, Providers)
 │   ├── components/     # Reusable UI components
+│   ├── constants/      # Constants
 │   ├── hooks/          # Custom React hooks
 │   ├── lib/            # Shared utilities (api-client, utils)
 │   └── styles/         # Global styles and Tailwind config
@@ -51,9 +52,9 @@ pnpm turbo typecheck --filter=@pointflow/web
 
 ## 🔗 Environment Variables
 
-| Variable              | Description            | Default                 |
-| --------------------- | ---------------------- | ----------------------- |
-| `NEXT_PUBLIC_API_URL` | Loyalty Engine API URL | `http://localhost:3001` |
+| Variable                         | Description            | Default                 |
+| -------------------------------- | ---------------------- | ----------------------- |
+| `NEXT_PUBLIC_LOYALTY_ENGINE_URL` | Loyalty Engine API URL | `http://localhost:3002` |
 
 ---
 

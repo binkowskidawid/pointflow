@@ -1,2 +1,5 @@
 export * from './visit.type'
 export * from './loyalty-card.type'
+export * from './loyalty-setting.type'
+export * from './tenant.type'
+export * from './user.type'

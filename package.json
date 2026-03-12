@@ -11,6 +11,7 @@
     "test": "turbo run test",
     "db:generate": "pnpm --filter @pointflow/drizzle-schemas db:generate",
     "db:migrate": "pnpm --filter @pointflow/drizzle-schemas db:migrate",
+    "db:seed": "pnpm --filter @pointflow/drizzle-schemas db:seed",
     "prepare": "husky"
   },
   "devDependencies": {

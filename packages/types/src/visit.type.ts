@@ -9,10 +9,13 @@ export interface PromotionSnapshot {
 export interface Visit {
   id: string
   userId: string
+  tenantId: string
+  cardId: string
   amountSpent: number
   currency: Currency
   pointsEarned: number
   appliedRuleSnapshot: PromotionSnapshot
   occurredAt: Date
   createdAt: Date
+  updatedAt: Date
 }

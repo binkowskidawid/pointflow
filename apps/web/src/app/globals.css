@@ -3,24 +3,33 @@
 @theme {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Emerald accent palette */
+  --color-emerald-950: #022c22;
+  --color-emerald-900: #064e3b;
+  --color-emerald-800: #065f46;
+  --color-emerald-700: #047857;
+  --color-emerald-600: #059669;
+  --color-emerald-500: #10b981;
+  --color-emerald-400: #34d399;
+  --color-emerald-300: #6ee7b7;
 }
 
+/* Force dark mode — dashboard is dark-only in v1 */
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a; /* Slate 900 */
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #020617; /* Slate 950 */
-    --foreground: #f8fafc; /* Slate 50 */
-  }
+  color-scheme: dark;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: #09090b; /* zinc-950 */
+  color: #f4f4f5; /* zinc-100 */
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smooth scrollbar for sidebar overflow */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #3f3f46 transparent; /* zinc-700 */
 }

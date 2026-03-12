@@ -20,19 +20,26 @@ export class VisitsService {
   ) {}
 
   async recordVisit(dto: CreateVisitDto): Promise<Visit> {
-    const promotion = DEFAULT_PROMOTION
-
-    const pointsEarned = this.pointsCalculator.calculate(dto.receiptAmount, promotion)
+    const pointsEarned = this.pointsCalculator.calculate(dto.receiptAmount, DEFAULT_PROMOTION)
 
     return this.visitsRepository.create({
       id: randomUUID(),
       userId: dto.userId,
+      tenantId: dto.tenantId,
       cardId: dto.cardId,
       amountSpent: dto.receiptAmount,
       currency: dto.receiptCurrency,
       pointsEarned,
-      appliedRuleSnapshot: promotion,
+      appliedRuleSnapshot: DEFAULT_PROMOTION,
       occurredAt: new Date(),
     })
+  }
+
+  async getAll({ tenantId }: { tenantId: string }): Promise<Visit[]> {
+    return this.visitsRepository.findAll({ tenantId })
+  }
+
+  async getByCardId({ cardId }: { cardId: string }): Promise<Visit[]> {
+    return this.visitsRepository.findByCardId({ cardId })
   }
 }
