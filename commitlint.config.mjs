@@ -14,6 +14,7 @@ export default {
         'auth',
         'notification',
         'analytics',
+        'kafka-contracts',
         // packages
         'contracts',
         'eslint-config',
