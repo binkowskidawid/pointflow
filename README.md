@@ -76,10 +76,10 @@ pointflow/
 │   └── analytics/        # Statistics & reporting (NestJS HTTP + Kafka)
 ├── packages/
 │   ├── typescript-config/ # Shared tsconfig (base / nextjs / nestjs)
-│   ├── eslint-config/    # Shared ESLint rules
-│   ├── shared-types/     # TypeScript interfaces & DTOs
-│   ├── drizzle-schemas/  # Database schemas
-│   └── kafka-contracts/  # Kafka event type definitions
+│   ├── eslint-config/     # Shared ESLint rules
+│   ├── contracts/         # TypeScript interfaces, DTOs & Kafka events
+│   ├── drizzle-schemas/   # Database schemas
+│   └── types/             # Pure domain models (Settings, Entities)
 └── infrastructure/
     ├── docker-compose.yml        # Dev stack
     └── docker-compose.prod.yml   # Production stack
@@ -131,8 +131,10 @@ pnpm run dev
 | --------------- | ----------------------- |
 | Admin Dashboard | <http://localhost:3000> |
 | API Gateway     | <http://localhost:3001> |
+| Loyalty Engine  | <http://localhost:3002> |
 | Customer Portal | <http://localhost:3005> |
-| Kafka UI        | <http://localhost:8080> |
+| Kafka UI        | <http://localhost:8090> |
+| CockroachDB UI  | <http://localhost:8080> |
 | MailHog         | <http://localhost:8025> |
 
 ## 🗺️ Roadmap
@@ -142,8 +144,8 @@ pnpm run dev
 - [x] **Stage 1** — Code quality toolchain (Prettier, Husky, lint-staged, GitHub Actions CI)
 - [x] **Stage 1** — Loyalty Engine (NestJS 11, Drizzle ORM, CockroachDB)
 - [x] **Stage 1** — Admin Dashboard (Next.js 16 + React Query + Tailwind 4)
-- [ ] **Stage 2** — Kafka 4.2 KRaft integration
-- [ ] **Stage 2** — API Gateway + JWT Auth
+- [x] **Stage 2** — Kafka 4.2 KRaft integration
+- [ ] **Stage 2** — API Gateway + JWT Auth (In Progress)
 - [ ] **Stage 2** — Notification Service
 - [ ] **Stage 3** — Analytics Service + Customer Portal
 - [ ] **Stage 3** — v1.0.0 release with `quickstart.sh`
