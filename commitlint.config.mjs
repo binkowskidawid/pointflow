@@ -19,7 +19,6 @@ export default {
         'eslint-config',
         'typescript-config',
         'drizzle-schemas',
-        'kafka-contracts',
         'types',
         // infra & tooling
         'infrastructure',

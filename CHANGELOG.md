@@ -38,6 +38,9 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Centrally managed Constants for navigation (`navItems.tsx`, `bottomItems.tsx`)
 - Centralized `loyaltyEngineClient` (Axios) with response interceptors for standardized error logging
 - Enabled CORS in NestJS `loyalty-engine` for local development (port 3000 -> 3001)
+- Local Docker Compose infrastructure: Apache Kafka 4.2 in KRaft mode, Kafka UI, and MailHog.
+- Dictionary for Kafka topics (`topics.ts`) and completely revised typed event structures (`PointsAwardedEvent`, `TierChangedEvent`) within `@pointflow/contracts`.
+- API Gateway microservice skeleton (`@pointflow/api-gateway` in NestJS 11) acting as the single HTTP entry point on port 3001.
 
 ### Fixed
 

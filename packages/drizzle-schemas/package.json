@@ -2,6 +2,7 @@
   "name": "@pointflow/drizzle-schemas",
   "version": "0.0.0",
   "private": true,
+  "author": "Dawid Bińkowski",
   "license": "MIT",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",

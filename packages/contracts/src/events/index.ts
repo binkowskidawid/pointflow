@@ -1,1 +1,2 @@
-export * from './points-earned.event'
+export * from './points-awarded.event'
+export * from './tier-changed.event'
