@@ -14,13 +14,11 @@ export default {
         'auth',
         'notification',
         'analytics',
-        'kafka-contracts',
         // packages
         'contracts',
         'eslint-config',
         'typescript-config',
         'drizzle-schemas',
-        'kafka-contracts',
         'types',
         // infra & tooling
         'infrastructure',
