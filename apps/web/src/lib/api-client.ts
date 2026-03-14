@@ -1,7 +1,7 @@
 import axios, { type AxiosError } from 'axios'
 
-const loyaltyEngineClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_LOYALTY_ENGINE_URL ?? 'http://localhost:3002',
+const apiClient = axios.create({
+  baseURL: `${process.env.NEXT_PUBLIC_API_GATEWAY_URL || 'http://localhost:3001'}/api/v1`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -9,7 +9,7 @@ const loyaltyEngineClient = axios.create({
 })
 
 // Centralise API error logging — avoids duplicate try/catch in every api function
-loyaltyEngineClient.interceptors.response.use(
+apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (process.env.NODE_ENV === 'development') {
@@ -26,4 +26,4 @@ loyaltyEngineClient.interceptors.response.use(
 //   return config
 // })
 
-export { loyaltyEngineClient }
+export { apiClient }

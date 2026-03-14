@@ -61,6 +61,6 @@ pnpm --filter @pointflow/web run dev
 
 ### Environment Variables
 
-| Variable                         | Description                       | Default                 |
-| -------------------------------- | --------------------------------- | ----------------------- |
-| `NEXT_PUBLIC_LOYALTY_ENGINE_URL` | Endpoint to internal Core/Gateway | `http://localhost:3002` |
+| Variable                      | Description                       | Default                 |
+| ----------------------------- | --------------------------------- | ----------------------- |
+| `NEXT_PUBLIC_API_GATEWAY_URL` | Endpoint to internal Core/Gateway | `http://localhost:3001` |

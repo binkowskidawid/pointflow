@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { LoggerModule } from 'nestjs-pino'
+import { LoyaltyModule } from './loyalty/loyalty.module'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -24,7 +25,9 @@ import { LoggerModule } from 'nestjs-pino'
             ? { target: 'pino-pretty', options: { colorize: true } }
             : undefined,
       },
+      forRoutes: ['*path'],
     }),
+    LoyaltyModule,
   ],
 })
 export class AppModule {}

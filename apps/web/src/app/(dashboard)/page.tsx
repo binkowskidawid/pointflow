@@ -1,20 +1,14 @@
 import { Activity, CreditCard, TrendingUp, Users } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import type { Visit } from '@pointflow/types'
+import { serverFetch } from '@/lib/api-server'
+import { API_ROUTES } from '@/lib/api-routes'
 
 export const dynamic = 'force-dynamic'
 
 // TODO: replace hardcoded tenantId with auth context in Stage 2
-const DEMO_TENANT_ID = 'f54f08d9-6a93-4b3f-b75a-4344153f3623'
-
-async function getVisits(): Promise<Visit[]> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_LOYALTY_ENGINE_URL ?? 'http://localhost:3002'}/visits?tenantId=${DEMO_TENANT_ID}`,
-    { cache: 'no-store' },
-  )
-  if (!response.ok) return []
-  return response.json() as Promise<Visit[]>
-}
+// const DEMO_TENANT_ID = 'f54f08d9-6a93-4b3f-b75a-4344153f3623'
+const DEMO_TENANT_ID = '52f3a599-23e6-4c38-aeae-d56754b7ce01'
 
 function StatCard({
   title,
@@ -42,7 +36,7 @@ function StatCard({
 }
 
 export default async function DashboardPage() {
-  const visits = await getVisits()
+  const visits = await serverFetch<Visit[]>(API_ROUTES.LOYALTY.TENANT_VISITS(DEMO_TENANT_ID))
 
   const totalPoints = visits.reduce((sum, v) => sum + v.pointsEarned, 0)
   const totalSpent = visits.reduce((sum, v) => sum + v.amountSpent, 0)
