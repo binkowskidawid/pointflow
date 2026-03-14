@@ -1,5 +1,5 @@
 <div align="center">
-  <h1>⚡ PointFlow</h1>
+  <h1><img src="apps/web/public/icon.png" width="32" height="32" alt="PointFlow Logo" /> PointFlow</h1>
   <p><strong>The open-source loyalty platform you can self-host in 5 minutes.</strong></p>
   <p>
     <a href="https://github.com/binkowskidawid/pointflow/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" /></a>
@@ -145,8 +145,8 @@ pnpm run dev
 - [x] **Stage 1** — Loyalty Engine (NestJS 11, Drizzle ORM, CockroachDB)
 - [x] **Stage 1** — Admin Dashboard (Next.js 16 + React Query + Tailwind 4)
 - [x] **Stage 2** — Kafka 4.2 KRaft integration
-- [ ] **Stage 2** — API Gateway + JWT Auth (In Progress)
-- [ ] **Stage 2** — Notification Service
+- [x] **Stage 2** — API Gateway + TCP Internal Communication
+- [ ] **Stage 2** — Notification Service (Kafka Consumer)
 - [ ] **Stage 3** — Analytics Service + Customer Portal
 - [ ] **Stage 3** — v1.0.0 release with `quickstart.sh`
 - [ ] **Stage 4** — WebSockets real-time dashboard

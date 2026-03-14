@@ -13,7 +13,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 
 // TODO: replace with auth context (tenantId + userId from JWT) in Stage 2
-const DEMO_TENANT_ID = 'f54f08d9-6a93-4b3f-b75a-4344153f3623'
+// const DEMO_TENANT_ID = 'f54f08d9-6a93-4b3f-b75a-4344153f3623'
+const DEMO_TENANT_ID = '52f3a599-23e6-4c38-aeae-d56754b7ce01'
 const DEMO_USER_ID = 'a1b2c3d4-0000-0000-0000-000000000001'
 
 type FormState = {

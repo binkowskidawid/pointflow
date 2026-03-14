@@ -17,6 +17,8 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Project structure: `apps/`, `services/`, `packages/`, `infrastructure/`
 - `@pointflow/contracts` — shared TypeScript contracts package for inter-service DTOs and Kafka event types (`PointsEarnedEvent`, `CreateVisitDto`, `CardTier`, `Currency`)
 - `@pointflow/types` — pure domain models (`Visit` with `PromotionSnapshot` SettingSnapshot pattern, `LoyaltyCard`)
+- `services/api-gateway` — Central entry point for all frontend requests, translating HTTP/REST to internal TCP/RPC.
+- `apps/web` — Updated to use central `apiClient` and `API_ROUTES` for better maintainability.
 - `@pointflow/drizzle-schemas` — Drizzle ORM schemas for `visits` and `loyalty_cards` tables with typed JSONB column
 - Initial database migration `0000_icy_bedlam.sql` for CockroachDB v25.2
 - `infrastructure/docker-compose.yml` — CockroachDB v25.2.13 single-node dev setup with health check and persistent volume
@@ -44,6 +46,9 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- **Frontend Loading State**: Resolved `UND_ERR_HEADERS_TIMEOUT` by correcting API URLs and mapping to the new API Gateway port.
+- **Microservices Routing**: Fixed 404 errors by properly registering controllers in the Gateway's `LoyaltyModule`.
+- **Logger Wildcards**: Updated `nestjs-pino` configuration to support Express 5.0 route path syntax.
 - `packages/drizzle-schemas` build output: included `rootDir` and corrected `package.json` exports to support both ESM and CJS NestJS runtime requirements
 - CockroachDB/Drizzle compatibility: switched from `drizzle-kit push` to file-based migrations via `postgres.js` to avoid `regtype[]` parsing errors during DB introspection
 - `vitest` CI stability: added `--passWithNoTests` flag to prevent job failures in packages without test files
@@ -52,6 +57,8 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Microservice Communication**: Switched `loyalty-engine` from HTTP to TCP (Transport.TCP).
+- **Frontend API Architecture**: Introduced `apiClient` (Axios) and `serverFetch` (Next.js Server Component helper) with centralized `API_ROUTES`.
 - **Financial Precision**: Switched `visits.amount_spent` from `real` to `integer` (cents) to ensure 100% precision in financial calculations.
 - `PointsCalculator`: Updated logic and unit tests to operate on cents (smallest currency unit).
 - **Toolchain Upgrade**: Updated ESLint to v10, `typescript-eslint` to v8.56.1, and `turbo` to v2.8.14 across the workspace.

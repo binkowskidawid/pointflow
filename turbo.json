@@ -1,7 +1,14 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
-  "globalEnv": ["PORT", "DATABASE_URL", "NODE_ENV", "CORS_ORIGIN"],
+  "globalEnv": [
+    "PORT",
+    "DATABASE_URL",
+    "NODE_ENV",
+    "CORS_ORIGIN",
+    "LOYALTY_ENGINE_HOST",
+    "LOYALTY_ENGINE_PORT"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
