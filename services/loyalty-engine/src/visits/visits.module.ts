@@ -4,11 +4,27 @@ import { VisitsService } from './visits.service'
 import { VisitsRepository } from './visits.repository'
 import { PointsCalculator } from './points-calculator'
 import { DatabaseModule } from '../database/database.module'
-import { CardsController } from './cards.controller'
+import { ClientsModule, Transport } from '@nestjs/microservices'
+import { CardsModule } from '../cards/cards.module'
+import { CardsVisitsController } from 'src/cards/cardsVisits.controller'
 
 @Module({
-  imports: [DatabaseModule],
-  controllers: [VisitsController, CardsController],
+  imports: [
+    DatabaseModule,
+    CardsModule,
+    ClientsModule.register([
+      {
+        name: 'KAFKA_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          clientId: 'loyalty-engine',
+          client: { brokers: ['localhost:9092'] },
+          consumer: { groupId: 'nest-consumer' },
+        },
+      },
+    ]),
+  ],
+  controllers: [VisitsController, CardsVisitsController],
   providers: [VisitsService, VisitsRepository, PointsCalculator],
 })
 export class VisitsModule {}

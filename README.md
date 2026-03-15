@@ -79,7 +79,8 @@ pointflow/
 │   ├── eslint-config/     # Shared ESLint rules
 │   ├── contracts/         # TypeScript interfaces, DTOs & Kafka events
 │   ├── drizzle-schemas/   # Database schemas
-│   └── types/             # Pure domain models (Settings, Entities)
+│   ├── types/             # Pure domain models (Settings, Entities)
+│   └── utils/             # Shared helper functions (code generation, etc.)
 └── infrastructure/
     ├── docker-compose.yml        # Dev stack
     └── docker-compose.prod.yml   # Production stack

@@ -18,6 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { DEMO_TENANT_ID } from '@/constants'
 
 function VisitsTableSkeleton() {
   return (
@@ -40,7 +41,7 @@ export function CheckCardView() {
     error,
   } = useQuery({
     queryKey: ['visits', 'card', submittedCardId],
-    queryFn: () => visitsApi.getByCardId(submittedCardId!),
+    queryFn: () => visitsApi.getByCardId(submittedCardId!, DEMO_TENANT_ID),
     // Only fetch when we have a submitted card ID
     enabled: Boolean(submittedCardId),
     staleTime: 30_000,

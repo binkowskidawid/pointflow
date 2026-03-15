@@ -4,6 +4,7 @@ import postgres from 'postgres'
 import { loyaltyCards, visits, users, tenants, loyaltySettings } from './index'
 import { CardTier } from '@pointflow/contracts'
 import { randomUUID } from 'crypto'
+import { generateLoyaltyCardCode } from '@pointflow/utils'
 
 const [USER_ID_1, USER_ID_2, USER_ID_3] = [randomUUID(), randomUUID(), randomUUID()]
 const [TENANT_ID_1, TENANT_ID_2, TENANT_ID_3] = [randomUUID(), randomUUID(), randomUUID()]
@@ -25,9 +26,19 @@ async function seed() {
   await db
     .insert(users)
     .values([
-      { id: USER_ID_1, email: 'jan@example.com', name: 'Jan Kowalski' },
-      { id: USER_ID_2, email: 'adam@example.com', name: 'Adam Nowak' },
-      { id: USER_ID_3, email: 'kasia@example.com', name: 'Katarzyna Los' },
+      {
+        id: USER_ID_1,
+        email: 'jan@example.com',
+        phoneNumber: '+48123456789',
+        name: 'Jan Kowalski',
+      },
+      { id: USER_ID_2, email: 'adam@example.com', phoneNumber: '+48123456788', name: 'Adam Nowak' },
+      {
+        id: USER_ID_3,
+        email: 'kasia@example.com',
+        phoneNumber: '+48123456787',
+        name: 'Katarzyna Los',
+      },
     ])
     .returning()
 
@@ -49,9 +60,27 @@ async function seed() {
   const insertedCards = await db
     .insert(loyaltyCards)
     .values([
-      { userId: USER_ID_1, tenantId: TENANT_ID_1, tier: CardTier.BRONZE, pointsBalance: 0 },
-      { userId: USER_ID_2, tenantId: TENANT_ID_2, tier: CardTier.SILVER, pointsBalance: 100 },
-      { userId: USER_ID_3, tenantId: TENANT_ID_3, tier: CardTier.GOLD, pointsBalance: 1000 },
+      {
+        userId: USER_ID_1,
+        code: generateLoyaltyCardCode(TENANT_ID_1),
+        tenantId: TENANT_ID_1,
+        tier: CardTier.BRONZE,
+        pointsBalance: 0,
+      },
+      {
+        userId: USER_ID_2,
+        code: generateLoyaltyCardCode(TENANT_ID_2),
+        tenantId: TENANT_ID_2,
+        tier: CardTier.SILVER,
+        pointsBalance: 100,
+      },
+      {
+        userId: USER_ID_3,
+        code: generateLoyaltyCardCode(TENANT_ID_3),
+        tenantId: TENANT_ID_3,
+        tier: CardTier.GOLD,
+        pointsBalance: 1000,
+      },
     ])
     .returning({ id: loyaltyCards.id })
 

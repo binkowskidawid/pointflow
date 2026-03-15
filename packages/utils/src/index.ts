@@ -1,0 +1,1 @@
+export { generateLoyaltyCardCode } from './generateLoyaltyCardCode'
