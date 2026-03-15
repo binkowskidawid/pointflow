@@ -3,12 +3,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import type { Visit } from '@pointflow/types'
 import { serverFetch } from '@/lib/api-server'
 import { API_ROUTES } from '@/lib/api-routes'
+import { DEMO_TENANT_ID } from '@/constants'
 
 export const dynamic = 'force-dynamic'
-
-// TODO: replace hardcoded tenantId with auth context in Stage 2
-// const DEMO_TENANT_ID = 'f54f08d9-6a93-4b3f-b75a-4344153f3623'
-const DEMO_TENANT_ID = '52f3a599-23e6-4c38-aeae-d56754b7ce01'
 
 function StatCard({
   title,

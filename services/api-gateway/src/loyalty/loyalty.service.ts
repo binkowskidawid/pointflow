@@ -16,8 +16,8 @@ export class LoyaltyService {
     return this.client.send({ cmd: 'get_all_visits' }, { tenantId })
   }
 
-  getVisitsByCardId(cardId: string): Observable<Visit[]> {
-    return this.client.send({ cmd: 'get_visits_by_card_id' }, { cardId })
+  getVisitsByCardId(cardId: string, tenantId: string): Observable<Visit[]> {
+    return this.client.send({ cmd: 'get_visits_by_card_id' }, { cardId, tenantId })
   }
 
   pingLoyalty(): Observable<string> {

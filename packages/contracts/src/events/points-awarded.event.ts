@@ -5,7 +5,7 @@ export interface PointsAwardedEvent {
   tenantId: string
   cardId: string
   cardCode: string
-  visitId: number
+  visitId: string
   receiptAmount: number
   receiptCurrency: Currency
   pointsAwarded: number

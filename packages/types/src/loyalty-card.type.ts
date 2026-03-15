@@ -4,6 +4,7 @@ export interface LoyaltyCard {
   id: string
   userId: string
   tenantId: string
+  code: string
   pointsBalance: number
   tier: CardTier
   createdAt: Date

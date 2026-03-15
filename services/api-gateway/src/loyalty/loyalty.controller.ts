@@ -20,8 +20,11 @@ export class LoyaltyController {
   }
 
   @Get('cards/:cardId/visits')
-  async getVisitsByCardId(@Param('cardId') cardId: string): Promise<Visit[]> {
-    return await firstValueFrom(this.loyaltyService.getVisitsByCardId(cardId))
+  async getVisitsByCardId(
+    @Param('cardId') cardId: string,
+    @Query('tenantId') tenantId: string,
+  ): Promise<Visit[]> {
+    return await firstValueFrom(this.loyaltyService.getVisitsByCardId(cardId, tenantId))
   }
 
   @Get('ping')

@@ -25,6 +25,7 @@
   "dependencies": {
     "@pointflow/contracts": "workspace:*",
     "@pointflow/types": "workspace:*",
+    "@pointflow/utils": "workspace:*",
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.45.1",
     "postgres": "^3.4.8"

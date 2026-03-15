@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { VisitsRepository } from './visits.repository'
 import { PointsCalculator } from './points-calculator'
-import type { CreateVisitDto } from '@pointflow/contracts'
+import { KAFKA_TOPICS, type CreateVisitDto } from '@pointflow/contracts'
 import type { PromotionSnapshot, Visit } from '@pointflow/types'
 import { randomUUID } from 'crypto'
+import { ClientKafka } from '@nestjs/microservices'
+import { CardsService } from '../cards/cards.service'
 
 // Hardcoded until PromotionsService exists
 const DEFAULT_PROMOTION: PromotionSnapshot = {
@@ -17,29 +19,66 @@ export class VisitsService {
   constructor(
     private readonly visitsRepository: VisitsRepository,
     private readonly pointsCalculator: PointsCalculator,
+    private readonly cardsService: CardsService,
+    @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ) {}
 
+  async onModuleInit() {
+    await this.kafkaClient.connect()
+  }
+
   async recordVisit(dto: CreateVisitDto): Promise<Visit> {
+    const card = await this.cardsService.resolveCard(dto.identifier, dto.tenantId)
     const pointsEarned = this.pointsCalculator.calculate(dto.receiptAmount, DEFAULT_PROMOTION)
 
-    return this.visitsRepository.create({
+    const visit = await this.visitsRepository.create({
       id: randomUUID(),
-      userId: dto.userId,
-      tenantId: dto.tenantId,
-      cardId: dto.cardId,
+      userId: card.userId,
+      tenantId: card.tenantId,
+      cardId: card.id,
       amountSpent: dto.receiptAmount,
       currency: dto.receiptCurrency,
       pointsEarned,
       appliedRuleSnapshot: DEFAULT_PROMOTION,
       occurredAt: new Date(),
     })
+
+    this.kafkaClient.emit(KAFKA_TOPICS.POINTS_AWARDED, {
+      eventId: randomUUID(),
+      tenantId: visit.tenantId,
+      cardId: visit.cardId,
+      cardCode: card.code,
+      visitId: visit.id,
+      receiptAmount: visit.amountSpent,
+      receiptCurrency: visit.currency,
+      pointsAwarded: visit.pointsEarned,
+      totalPointsAfter: visit.pointsEarned,
+      previousDiscount: 0,
+      currentDiscount: 0,
+      timestamp: new Date().toISOString(),
+    })
+
+    return visit
   }
 
   async getAll({ tenantId }: { tenantId: string }): Promise<Visit[]> {
     return this.visitsRepository.findAll({ tenantId })
   }
 
-  async getByCardId({ cardId }: { cardId: string }): Promise<Visit[]> {
+  async getByCardId(data: { cardId: string; tenantId?: string }): Promise<Visit[]> {
+    const { cardId, tenantId } = data
+
+    if (!cardId) {
+      throw new Error('Card ID is required')
+    }
+
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(cardId)
+
+    if (!isUuid && tenantId) {
+      const card = await this.cardsService.resolveCard(cardId, tenantId)
+      return this.visitsRepository.findByCardId({ cardId: card.id })
+    }
+
     return this.visitsRepository.findByCardId({ cardId })
   }
 }

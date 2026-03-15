@@ -17,8 +17,10 @@ export const visitsApi = {
   /**
    * Receptionist: visit history for a specific loyalty card.
    */
-  getByCardId: async (cardId: string): Promise<Visit[]> => {
-    const { data } = await apiClient.get<Visit[]>(API_ROUTES.LOYALTY.CARD_VISITS(cardId))
+  getByCardId: async (cardId: string, tenantId?: string): Promise<Visit[]> => {
+    const { data } = await apiClient.get<Visit[]>(API_ROUTES.LOYALTY.CARD_VISITS(cardId), {
+      params: { tenantId },
+    })
     return data
   },
 

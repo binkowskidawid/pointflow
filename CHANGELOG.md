@@ -43,9 +43,16 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Local Docker Compose infrastructure: Apache Kafka 4.2 in KRaft mode, Kafka UI, and MailHog.
 - Dictionary for Kafka topics (`topics.ts`) and completely revised typed event structures (`PointsAwardedEvent`, `TierChangedEvent`) within `@pointflow/contracts`.
 - API Gateway microservice skeleton (`@pointflow/api-gateway` in NestJS 11) acting as the single HTTP entry point on port 3001.
+- **Advanced Card Resolution**: Introduced `resolveCard` in `loyalty-engine` to identify cards by UUID, code, phone, or email.
+- **Phone Normalization**: Implemented 9-digit suffix matching for phone numbers in `CardsRepository`.
+- **New `@pointflow/utils` package**: Dedicated package for shared business utilities like `generateLoyaltyCardCode`.
+- **Modular Cards Logic**: Refactored `loyalty-engine` to have a standalone `CardsModule`.
+- **Tenant-Aware Queries**: Updated API Gateway and Frontend to ensure `tenantId` is consistently passed for secure data isolation.
 
 ### Fixed
 
+- **UUID Parsing Errors**: Resolved `RpcExceptionsHandler` errors where identifiers (phone/code) were incorrectly treated as UUIDs by the database.
+- **Frontend Loading State**: Resolved `UND_ERR_HEADERS_TIMEOUT` by correcting API URLs and mapping to the new API Gateway port.
 - **Frontend Loading State**: Resolved `UND_ERR_HEADERS_TIMEOUT` by correcting API URLs and mapping to the new API Gateway port.
 - **Microservices Routing**: Fixed 404 errors by properly registering controllers in the Gateway's `LoyaltyModule`.
 - **Logger Wildcards**: Updated `nestjs-pino` configuration to support Express 5.0 route path syntax.
