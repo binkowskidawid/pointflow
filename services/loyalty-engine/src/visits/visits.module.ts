@@ -17,12 +17,12 @@ import { CardsVisitsController } from 'src/cards/cardsVisits.controller'
         name: 'KAFKA_SERVICE',
         transport: Transport.KAFKA,
         options: {
-          clientId: process.env.KAFKA_CLIENT_ID || 'loyalty-engine',
           client: {
+            clientId: process.env.KAFKA_CLIENT_ID_CLIENT || 'loyalty-engine-client',
             brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
           },
           consumer: {
-            groupId: process.env.KAFKA_GROUP_ID || 'loyalty-engine-consumer',
+            groupId: process.env.KAFKA_GROUP_ID || 'loyalty-engine-group',
           },
         },
       },

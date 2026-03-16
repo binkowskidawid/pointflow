@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config'
 import { VisitsModule } from './visits/visits.module'
 import { LoggerModule } from 'nestjs-pino'
 import { CardsModule } from './cards/cards.module'
+import { UsersModule } from './users/users.module'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -29,6 +30,7 @@ import { CardsModule } from './cards/cards.module'
     }),
     VisitsModule,
     CardsModule,
+    UsersModule,
   ],
 })
 export class AppModule {}

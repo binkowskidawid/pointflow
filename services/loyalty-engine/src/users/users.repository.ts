@@ -10,7 +10,7 @@ import { User } from '@pointflow/types'
 export class UsersRepository {
   constructor(@InjectDatabase() private readonly db: PostgresJsDatabase<typeof schema>) {}
 
-  async upsert(data: User) {
+  async upsert(data: Partial<User> & { id: string; email: string }) {
     const results = await this.db
       .insert(users)
       .values({
@@ -18,8 +18,8 @@ export class UsersRepository {
         email: data.email,
         phoneNumber: data.phoneNumber,
         name: data.name || data.email.split('@')[0] || 'Anonymous',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: data.createdAt || new Date(),
+        updatedAt: data.updatedAt || new Date(),
       })
       .onConflictDoUpdate({
         target: users.id,
