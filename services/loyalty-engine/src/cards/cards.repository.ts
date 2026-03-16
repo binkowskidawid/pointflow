@@ -76,7 +76,7 @@ export class CardsRepository {
   }: {
     id: string
     pointsDelta: number
-  }): Promise<LoyaltyCard> {
+  }): Promise<Pick<LoyaltyCard, 'pointsBalance'>> {
     const [updated] = await this.db
       .update(loyaltyCards)
       .set({
@@ -84,7 +84,7 @@ export class CardsRepository {
         updatedAt: new Date(),
       })
       .where(eq(loyaltyCards.id, id))
-      .returning()
-    return updated as unknown as LoyaltyCard
+      .returning({ pointsBalance: loyaltyCards.pointsBalance })
+    return updated as unknown as Pick<LoyaltyCard, 'pointsBalance'>
   }
 }

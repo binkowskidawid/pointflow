@@ -44,4 +44,8 @@ export class CardsService {
     }
     return card
   }
+
+  async addPoints(cardId: string, points: number): Promise<Pick<LoyaltyCard, 'pointsBalance'>> {
+    return await this.cardsRepository.updatePoints({ id: cardId, pointsDelta: points })
+  }
 }

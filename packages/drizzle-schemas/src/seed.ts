@@ -73,21 +73,21 @@ async function seed() {
         code: generateLoyaltyCardCode(TENANT_ID_1),
         tenantId: TENANT_ID_1,
         tier: CardTier.BRONZE,
-        pointsBalance: 0,
+        pointsBalance: 100,
       },
       {
         userId: USER_ID_2,
         code: generateLoyaltyCardCode(TENANT_ID_2),
         tenantId: TENANT_ID_2,
-        tier: CardTier.SILVER,
-        pointsBalance: 100,
+        tier: CardTier.BRONZE,
+        pointsBalance: 200,
       },
       {
         userId: USER_ID_3,
         code: generateLoyaltyCardCode(TENANT_ID_3),
         tenantId: TENANT_ID_3,
-        tier: CardTier.GOLD,
-        pointsBalance: 1000,
+        tier: CardTier.BRONZE,
+        pointsBalance: 300,
       },
     ])
     .returning({ id: loyaltyCards.id, code: loyaltyCards.code })
