@@ -20,6 +20,7 @@ export default {
         'typescript-config',
         'drizzle-schemas',
         'types',
+        'notification-service',
         // infra & tooling
         'infrastructure',
         'ci',
