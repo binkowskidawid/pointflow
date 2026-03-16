@@ -113,12 +113,28 @@ docker compose -f infrastructure/docker-compose.yml up -d
 
 This starts: CockroachDB (pf_loyalty and pf_notifications databases), Kafka 4.2 KRaft, MailHog (local email), and Kafka UI.
 
-### 3. Configure environment
+Because PointFlow uses isolated microservices, each app and service relies on its own scoped environment configurations to ensure decoupling.
+
+Run the following commands to create your `.env` files from their respective templates:
 
 ```bash
+# Root (Used by Turborepo / Prisma / Global scripts)
 cp .env.example .env
-# Edit .env with your local values
+
+# Web Frontend
+cp apps/web/.env.example apps/web/.env
+
+# API Gateway
+cp services/api-gateway/.env.example services/api-gateway/.env
+
+# Loyalty Engine
+cp services/loyalty-engine/.env.example services/loyalty-engine/.env
+
+# Notification Service
+cp services/notification-service/.env.example services/notification-service/.env
 ```
+
+_Note: The default `.env.example` values are perfectly matched for the standard local `docker compose` footprint. You only need to edit them if you are changing infrastructure ports._
 
 ### 4. Database Setup (Migrations & Seeding)
 
