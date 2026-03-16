@@ -49,6 +49,7 @@ export class VisitsService {
     this.kafkaClient.emit(KAFKA_TOPICS.POINTS_AWARDED, {
       eventId: randomUUID(),
       tenantId: visit.tenantId,
+      userId: visit.userId,
       cardId: visit.cardId,
       cardCode: visit.cardCode,
       visitId: visit.id,

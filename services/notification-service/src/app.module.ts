@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { LoggerModule } from 'nestjs-pino'
-import { NotificationsController } from './notification.controller'
 import { MailerModule } from '@nestjs-modules/mailer'
+import { DatabaseModule } from './database/database.module'
+import { NotificationsModule } from './notifications/notifications.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
+    NotificationsModule,
     LoggerModule.forRoot({
       pinoHttp: {
         customProps: () => ({
@@ -40,6 +43,5 @@ import { MailerModule } from '@nestjs-modules/mailer'
       },
     }),
   ],
-  controllers: [NotificationsController],
 })
 export class AppModule {}

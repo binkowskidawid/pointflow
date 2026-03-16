@@ -8,6 +8,6 @@ export default defineConfig({
   dbCredentials: {
     url:
       process.env['DATABASE_URL'] ??
-      'postgresql://pointflow_user@localhost:26257/pointflow?sslmode=disable',
+      'postgresql://pointflow_user@localhost:26257/pf_loyalty?sslmode=disable',
   },
 })
