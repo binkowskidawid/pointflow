@@ -11,6 +11,7 @@ export interface Visit {
   userId: string
   tenantId: string
   cardId: string
+  cardCode: string
   amountSpent: number
   currency: Currency
   pointsEarned: number

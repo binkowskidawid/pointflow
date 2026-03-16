@@ -6,8 +6,16 @@ import { CardTier } from '@pointflow/contracts'
 import { randomUUID } from 'crypto'
 import { generateLoyaltyCardCode } from '@pointflow/utils'
 
-const [USER_ID_1, USER_ID_2, USER_ID_3] = [randomUUID(), randomUUID(), randomUUID()]
-const [TENANT_ID_1, TENANT_ID_2, TENANT_ID_3] = [randomUUID(), randomUUID(), randomUUID()]
+const [USER_ID_1, USER_ID_2, USER_ID_3] = [
+  '08098720-4118-438d-8711-50311d422b76',
+  '9e87c038-130b-426d-b926-59195424734b',
+  '99041540-550a-416d-9749-59195424734b',
+]
+const [TENANT_ID_1, TENANT_ID_2, TENANT_ID_3] = [
+  '1d6674c7-4966-49a0-a269-4c46a44cc276',
+  '7119b956-a0c0-4683-a2ad-69943139a8f5',
+  '57317882-659e-4757-824e-7149055e483f',
+]
 
 const connectionString =
   process.env.DATABASE_URL || 'postgres://pointflow_user@localhost:26257/pointflow'
@@ -82,7 +90,7 @@ async function seed() {
         pointsBalance: 1000,
       },
     ])
-    .returning({ id: loyaltyCards.id })
+    .returning({ id: loyaltyCards.id, code: loyaltyCards.code })
 
   const [card1, card2, card3] = insertedCards
 
@@ -95,6 +103,7 @@ async function seed() {
       userId: USER_ID_1,
       tenantId: TENANT_ID_1,
       cardId: card1.id,
+      cardCode: card1.code,
       amountSpent: 10000,
       currency: 'PLN',
       pointsEarned: 100,
@@ -109,6 +118,7 @@ async function seed() {
       userId: USER_ID_2,
       tenantId: TENANT_ID_2,
       cardId: card2.id,
+      cardCode: card2.code,
       amountSpent: 20000,
       currency: 'PLN',
       pointsEarned: 200,
@@ -123,6 +133,7 @@ async function seed() {
       userId: USER_ID_3,
       tenantId: TENANT_ID_3,
       cardId: card3.id,
+      cardCode: card3.code,
       amountSpent: 30000,
       currency: 'PLN',
       pointsEarned: 300,

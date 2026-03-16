@@ -1,0 +1,1 @@
+ALTER TABLE "visits" ADD COLUMN "card_code" varchar(20) NOT NULL;

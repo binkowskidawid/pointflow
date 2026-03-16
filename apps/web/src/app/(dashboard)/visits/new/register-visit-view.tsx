@@ -15,13 +15,13 @@ import { Badge } from '@/components/ui/badge'
 import { DEMO_TENANT_ID } from '@/constants'
 
 type FormState = {
-  cardId: string
+  cardIdentifier: string
   receiptAmount: string
   receiptCurrency: Currency
 }
 
 const INITIAL_FORM: FormState = {
-  cardId: '',
+  cardIdentifier: '',
   receiptAmount: '',
   receiptCurrency: Currency.PLN,
 }
@@ -55,7 +55,7 @@ export function RegisterVisitView() {
     }
   }
 
-  function handleSubmit(event: React.FormEvent) {
+  function handleSubmit(event: React.SubmitEvent) {
     event.preventDefault()
 
     const amountCents = Math.round(parseFloat(form.receiptAmount) * 100)
@@ -66,14 +66,15 @@ export function RegisterVisitView() {
     }
 
     mutate({
-      identifier: form.cardId.trim(),
+      identifier: form.cardIdentifier.trim(),
       tenantId: DEMO_TENANT_ID,
       receiptAmount: amountCents,
       receiptCurrency: form.receiptCurrency,
     })
   }
 
-  const isFormValid = form.cardId.trim() && form.receiptAmount && parseFloat(form.receiptAmount) > 0
+  const isFormValid =
+    form.cardIdentifier.trim() && form.receiptAmount && parseFloat(form.receiptAmount) > 0
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
@@ -91,20 +92,21 @@ export function RegisterVisitView() {
             New Visit
           </CardTitle>
           <CardDescription>
-            Fill in the card ID and receipt details. Points are calculated automatically.
+            Fill in the card number or phone number and receipt details. Points are calculated
+            automatically.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <form id="register-visit-form" onSubmit={handleSubmit} className="space-y-5">
-            {/* Card ID */}
+            {/* Card Identifier */}
             <div className="space-y-1.5">
-              <Label htmlFor="visit-card-id">Loyalty Card ID</Label>
+              <Label htmlFor="visit-card-identifier">Loyalty Card Number or Phone Number</Label>
               <Input
-                id="visit-card-id"
+                id="visit-card-identifier"
                 type="text"
-                value={form.cardId}
-                onChange={handleChange('cardId')}
-                placeholder="e.g. a1b2c3d4-e5f6-..."
+                value={form.cardIdentifier}
+                onChange={handleChange('cardIdentifier')}
+                placeholder="e.g. 1234567890 or c98765..."
                 className="font-mono"
                 autoComplete="off"
                 required
@@ -169,7 +171,7 @@ export function RegisterVisitView() {
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div>
                 <p className="text-zinc-500">Card</p>
-                <p className="font-mono text-xs text-zinc-300">{lastVisit.cardId}</p>
+                <p className="font-mono text-xs text-zinc-300">{lastVisit.cardCode}</p>
               </div>
               <div>
                 <p className="text-zinc-500">Date</p>
