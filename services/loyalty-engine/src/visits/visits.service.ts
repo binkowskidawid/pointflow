@@ -36,6 +36,7 @@ export class VisitsService {
       userId: card.userId,
       tenantId: card.tenantId,
       cardId: card.id,
+      cardCode: card.code,
       amountSpent: dto.receiptAmount,
       currency: dto.receiptCurrency,
       pointsEarned,
@@ -43,16 +44,19 @@ export class VisitsService {
       occurredAt: new Date(),
     })
 
+    const totalPointsAfter = await this.cardsService.addPoints(card.id, pointsEarned)
+
     this.kafkaClient.emit(KAFKA_TOPICS.POINTS_AWARDED, {
       eventId: randomUUID(),
       tenantId: visit.tenantId,
+      userId: visit.userId,
       cardId: visit.cardId,
-      cardCode: card.code,
+      cardCode: visit.cardCode,
       visitId: visit.id,
       receiptAmount: visit.amountSpent,
       receiptCurrency: visit.currency,
       pointsAwarded: visit.pointsEarned,
-      totalPointsAfter: visit.pointsEarned,
+      totalPointsAfter: totalPointsAfter.pointsBalance,
       previousDiscount: 0,
       currentDiscount: 0,
       timestamp: new Date().toISOString(),

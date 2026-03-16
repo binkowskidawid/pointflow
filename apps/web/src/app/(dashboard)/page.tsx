@@ -93,7 +93,8 @@ export default async function DashboardPage() {
                 >
                   <div>
                     <p className="text-sm font-medium text-zinc-200">
-                      Card: <span className="font-mono text-xs text-zinc-400">{visit.cardId}</span>
+                      Card:{' '}
+                      <span className="font-mono text-xs text-zinc-400">{visit.cardCode}</span>
                     </p>
                     <p className="text-xs text-zinc-500">
                       {new Date(visit.occurredAt).toLocaleString('en-GB')}

@@ -71,14 +71,12 @@ export function CheckCardView() {
             <CreditCard className="h-4 w-4 text-emerald-500" />
             Card Lookup
           </CardTitle>
-          <CardDescription>
-            Enter the loyalty card ID from the physical card or system
-          </CardDescription>
+          <CardDescription>Enter the loyalty card number or client phone number</CardDescription>
         </CardHeader>
         <CardContent>
           <form id="card-check-form" onSubmit={handleSubmit} className="flex gap-3">
             <div className="flex-1 space-y-1.5">
-              <Label htmlFor="card-id-input">Card ID</Label>
+              <Label htmlFor="card-id-input">Card number or phone number</Label>
               <Input
                 id="card-id-input"
                 type="text"

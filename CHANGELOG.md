@@ -48,6 +48,14 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **New `@pointflow/utils` package**: Dedicated package for shared business utilities like `generateLoyaltyCardCode`.
 - **Modular Cards Logic**: Refactored `loyalty-engine` to have a standalone `CardsModule`.
 - **Tenant-Aware Queries**: Updated API Gateway and Frontend to ensure `tenantId` is consistently passed for secure data isolation.
+- **Notification Service**: Scaffolded and implemented a new NestJS Kafka consumer service (`notification-service`) responsible for handling email dispatches.
+- **MailHog Integration**: Wired up the `notification-service` to use `nodemailer` for sending Welcome Emails locally via MailHog.
+- **Hybrid Microservice**: Transformed the `loyalty-engine` into a Hybrid app capable of processing both synchronous TCP commands (via API Gateway) and asynchronous Kafka events (e.g. `USER_CREATED`).
+- **Data Simulator**: Introduced `scripts/simulate-user-created.ts` to mock Kafka events coming from Auth Service without actually deploying Auth Service yet.
+- **Materialized Views**: Added a Read Model via `UsersRepository` in `loyalty-engine` reacting to the `USER_CREATED` topic, synchronizing essential user info for internal processes.
+- **Point Accumulation System**: Integrated dynamic point calculation upon visits in `loyalty-engine` emitting explicit `PointsAwardedEvent` messages to Kafka.
+- **Notification Data Isolation**: Implemented a standalone user repository within `notification-service` reacting to `USER_CREATED` to hold contact profiles securely for email dispatches.
+- **Dashboard Visibility**: Exposed `cardCode` on visit records within the `app/(dashboard)` views of the `web` frontend app.
 
 ### Fixed
 
@@ -56,6 +64,9 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Frontend Loading State**: Resolved `UND_ERR_HEADERS_TIMEOUT` by correcting API URLs and mapping to the new API Gateway port.
 - **Microservices Routing**: Fixed 404 errors by properly registering controllers in the Gateway's `LoyaltyModule`.
 - **Logger Wildcards**: Updated `nestjs-pino` configuration to support Express 5.0 route path syntax.
+- **Kafka Topic Syntax Issues**: Addressed `INVALID_TOPIC_EXCEPTION` by updating string message patterns in `@pointflow/contracts` to avoid colons (`:`) resulting in safe "dot" notations (e.g. `loyalty.visit.create`).
+- **Conflict of Kafka ClientIDs**: Established distinct Kafka Client IDs per server connection by separating standard `-client` and `-server` suffixes defined in environment configuration to avoid internal connection resets.
+- **Unique Constraint Restarts (Poison Pills)**: Demonstrated KafkaJS robust error recovery — correctly processing automatic retries and delaying restarts upon catching Drizzle DB `UNIQUE KEY` exceptions, instead of silently dropping data.
 - `packages/drizzle-schemas` build output: included `rootDir` and corrected `package.json` exports to support both ESM and CJS NestJS runtime requirements
 - CockroachDB/Drizzle compatibility: switched from `drizzle-kit push` to file-based migrations via `postgres.js` to avoid `regtype[]` parsing errors during DB introspection
 - `vitest` CI stability: added `--passWithNoTests` flag to prevent job failures in packages without test files

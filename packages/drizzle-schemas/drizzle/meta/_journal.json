@@ -57,6 +57,13 @@
       "when": 1773578888002,
       "tag": "0007_charming_quasimodo",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1773650594279,
+      "tag": "0008_lazy_prowler",
+      "breakpoints": true
     }
   ]
 }

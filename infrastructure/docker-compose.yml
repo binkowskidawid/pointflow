@@ -24,7 +24,13 @@ services:
     entrypoint: ["/bin/bash", "-c"]
     command:
       - |
-        cockroach sql --insecure --host=cockroachdb --execute="CREATE DATABASE IF NOT EXISTS pointflow; CREATE USER IF NOT EXISTS pointflow_user; GRANT ALL ON DATABASE pointflow TO pointflow_user;"
+        cockroach sql --insecure --host=cockroachdb --execute="
+          CREATE DATABASE IF NOT EXISTS pf_loyalty;
+          CREATE DATABASE IF NOT EXISTS pf_notifications;
+          CREATE USER IF NOT EXISTS pointflow_user;
+          GRANT ALL ON DATABASE pf_loyalty TO pointflow_user;
+          GRANT ALL ON DATABASE pf_notifications TO pointflow_user;
+        "
 
   kafka:
     image: apache/kafka:4.2.0

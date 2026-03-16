@@ -9,6 +9,7 @@ export const visits = pgTable('visits', {
     .notNull()
     .references(() => tenants.id, { onDelete: 'cascade' }),
   cardId: uuid('card_id').notNull(),
+  cardCode: varchar('card_code', { length: 20 }).notNull(),
   // amountSpent in cents to avoid floating point errors e.g. 10.99 -> 1099
   amountSpent: integer('amount_spent').notNull(),
   currency: varchar('currency', { length: 3 }).notNull(),

@@ -42,6 +42,7 @@ Browser (Next.js 16)
                                       (Kafka consumer)
 
   All services ↔ CockroachDB v25.2 LTS via Drizzle ORM 0.45
+  (Database per Service: pf_loyalty, pf_notifications)
 ```
 
 ## 🛠️ Tech Stack
@@ -81,9 +82,12 @@ pointflow/
 │   ├── drizzle-schemas/   # Database schemas
 │   ├── types/             # Pure domain models (Settings, Entities)
 │   └── utils/             # Shared helper functions (code generation, etc.)
-└── infrastructure/
-    ├── docker-compose.yml        # Dev stack
-    └── docker-compose.prod.yml   # Production stack
+├── infrastructure/
+│   ├── docker-compose.yml        # Dev stack
+│   └── docker-compose.prod.yml   # Production stack
+└── scripts/
+    ├── db-migrate-all.ts         # Global database migration runner
+    └── db-seed-all.ts            # Global database seeding runner
 ```
 
 ## 🚀 Quick Start
@@ -107,7 +111,7 @@ pnpm install
 docker compose -f infrastructure/docker-compose.yml up -d
 ```
 
-This starts: CockroachDB (autocreated `pointflow` DB and `pointflow_user`), Kafka 4.2 KRaft, MailHog (local email), and Kafka UI.
+This starts: CockroachDB (pf_loyalty and pf_notifications databases), Kafka 4.2 KRaft, MailHog (local email), and Kafka UI.
 
 ### 3. Configure environment
 
@@ -116,10 +120,16 @@ cp .env.example .env
 # Edit .env with your local values
 ```
 
-### 4. Run migrations
+### 4. Database Setup (Migrations & Seeding)
+
+PointFlow uses a "Database per Service" architecture. We use global scripts to manage all databases at once.
 
 ```bash
+# Apply migrations to all service databases
 pnpm run db:migrate
+
+# (Optional) Seed all databases with demo data
+pnpm run db:seed
 ```
 
 ### 5. Start development
@@ -147,7 +157,8 @@ pnpm run dev
 - [x] **Stage 1** — Admin Dashboard (Next.js 16 + React Query + Tailwind 4)
 - [x] **Stage 2** — Kafka 4.2 KRaft integration
 - [x] **Stage 2** — API Gateway + TCP Internal Communication
-- [ ] **Stage 2** — Notification Service (Kafka Consumer)
+- [x] **Stage 2** — Notification Service (Kafka Consumer)
+- [ ] **Stage 2** — Auth Service (Registration, Login, JWT)
 - [ ] **Stage 3** — Analytics Service + Customer Portal
 - [ ] **Stage 3** — v1.0.0 release with `quickstart.sh`
 - [ ] **Stage 4** — WebSockets real-time dashboard

@@ -1,7 +1,6 @@
 import { pgTable, uuid, integer, varchar, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 import { CardTier } from '@pointflow/contracts'
 import { tenants } from './tenants.schema'
-import { sql } from 'drizzle-orm'
 
 export const loyaltyCards = pgTable(
   'loyalty_cards',

@@ -7,7 +7,13 @@
     "NODE_ENV",
     "CORS_ORIGIN",
     "LOYALTY_ENGINE_HOST",
-    "LOYALTY_ENGINE_PORT"
+    "LOYALTY_ENGINE_PORT",
+    "KAFKA_CLIENT_ID",
+    "KAFKA_CLIENT_ID_SERVER",
+    "KAFKA_CLIENT_ID_CLIENT",
+    "KAFKA_BROKER",
+    "KAFKA_GROUP_ID",
+    "DEMO_EMAIL"
   ],
   "tasks": {
     "build": {

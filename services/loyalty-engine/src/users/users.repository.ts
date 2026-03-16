@@ -1,0 +1,42 @@
+import { Injectable } from '@nestjs/common'
+import { users } from '@pointflow/drizzle-schemas'
+import { eq } from 'drizzle-orm'
+import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
+import type * as schema from '@pointflow/drizzle-schemas'
+import { InjectDatabase } from '../database/database.decorator'
+import { User } from '@pointflow/types'
+
+@Injectable()
+export class UsersRepository {
+  constructor(@InjectDatabase() private readonly db: PostgresJsDatabase<typeof schema>) {}
+
+  async upsert(data: Partial<User> & { id: string; email: string }) {
+    const results = await this.db
+      .insert(users)
+      .values({
+        id: data.id,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        name: data.name || data.email.split('@')[0] || 'Anonymous',
+        createdAt: data.createdAt || new Date(),
+        updatedAt: data.updatedAt || new Date(),
+      })
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          email: data.email,
+          phoneNumber: data.phoneNumber,
+          name: data.name || data.email.split('@')[0] || 'Anonymous',
+          updatedAt: new Date(),
+        },
+      })
+      .returning()
+
+    return results[0]
+  }
+
+  async findById(id: string) {
+    const [user] = await this.db.select().from(users).where(eq(users.id, id))
+    return user || null
+  }
+}
