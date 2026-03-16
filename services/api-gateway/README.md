@@ -36,4 +36,10 @@ The API Gateway runs on port `3001` by default and is configured to run alongsid
 pnpm --filter @pointflow/api-gateway run dev
 ```
 
-For environment variables, refer to the root `infrastructure` configuration.
+### Configuration
+
+Each service manages its own environment variables to retain pure decoupling. Ensure you copy the template before first start:
+
+```bash
+cp .env.example .env
+```

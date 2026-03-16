@@ -48,6 +48,16 @@ apps/web/
 
 The Web Dashboard runs on port `3000` by default.
 
+### 1. Configuration
+
+Copy the `.env.example` file to create your local `.env`. It is required for Kafka coordinates and Database connection:
+
+```bash
+cp .env.example .env
+```
+
+### 2. Start
+
 ```bash
 # Start the Next.js development server (from the monorepo root)
 pnpm --filter @pointflow/web run dev

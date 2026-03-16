@@ -20,18 +20,29 @@ By operating purely within the isolated backend network (via TCP), it ensures th
 - **Data Persistence**: Interfaces safely with CockroachDB using Drizzle ORM to ensure distributed SQL consistency.
 - **Internal TCP Transport**: Listens to `@MessagePattern` commands from the API Gateway instead of exposing HTTP REST routes.
 - **Event Producer**: Pushes idempotency-ready events (e.g., `PointsAwardedEvent`, `TierChangedEvent`) to the Kafka broker for downstream consumers (like Notifications and Analytics).
+- **Event Consumer (Hybrid Mode)**: Reacts to `USER_CREATED` events published by the Auth service to maintain a robust Read Model projection natively via `UsersRepository`.
 
 ## 🛠️ Tech Stack
 
-- **Framework**: NestJS 11 Microservices
+- **Framework**: NestJS 11 Microservices (Hybrid TCP + Kafka)
 - **Database**: CockroachDB v25.2.x
 - **ORM**: Drizzle ORM `0.45.x` with Postgres.js driver
-- **Message Broker integration**: Kafka 4.2 KRaft (Producer)
+- **Message Broker integration**: Kafka 4.2 KRaft (Producer & Consumer)
 - **Logging**: Pino (`nestjs-pino`)
 
 ## 🏗️ Development
 
 The Loyalty Engine runs internally on port `3002` by default.
+
+### 1. Configuration
+
+Copy the `.env.example` file to create your local `.env`. It is required for Kafka coordinates and Database connection:
+
+```bash
+cp .env.example .env
+```
+
+### 2. Start
 
 ```bash
 # Start the service in watch mode (from the monorepo root)
