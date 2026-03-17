@@ -28,6 +28,8 @@ export default {
         'deps',
         // docs
         'docs',
+        // other
+        'tests',
       ],
     ],
     'scope-empty': [1, 'never'],

@@ -15,10 +15,13 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "@pointflow/typescript-config": "workspace:*",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
