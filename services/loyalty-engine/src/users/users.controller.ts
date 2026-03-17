@@ -18,6 +18,11 @@ export class UsersController {
       email: data.email,
       name: data.name,
       phoneNumber: data.phoneNumber,
+      tenantId: data.tenantId,
+      role: data.role,
+      passwordHash: data.passwordHash,
+      twoFactorSecret: data.twoFactorSecret,
+      twoFactorEnabled: data.twoFactorEnabled,
     })
 
     this.logger.log(`User ${data.email} synced in Loyalty Engine.`)

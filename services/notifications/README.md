@@ -1,4 +1,4 @@
-# @pointflow/notification-service
+# @pointflow/notifications
 
 <div align="center">
   <p><strong>The asynchronous Kafka event consumer and email dispatcher for PointFlow.</strong></p>
@@ -46,7 +46,7 @@ cp .env.example .env
 
 ```bash
 # Start the service in watch mode (from the monorepo root)
-pnpm --filter @pointflow/notification-service run dev
+pnpm --filter @pointflow/notification run dev
 ```
 
 Remember to run database migrations from the monorepo root (`pnpm run db:migrate`) before initiating the Notification Service to ensure `users` Read Model schema parity.

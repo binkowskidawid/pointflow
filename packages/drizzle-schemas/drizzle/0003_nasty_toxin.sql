@@ -1,1 +1,0 @@
-ALTER TABLE "visits" ALTER COLUMN "amount_spent" SET DATA TYPE integer;

@@ -12,7 +12,7 @@ export default {
         'api-gateway',
         'loyalty-engine',
         'auth',
-        'notification',
+        'notifications',
         'analytics',
         // packages
         'contracts',
@@ -20,7 +20,6 @@ export default {
         'typescript-config',
         'drizzle-schemas',
         'types',
-        'notification-service',
         // infra & tooling
         'infrastructure',
         'ci',

@@ -5,7 +5,7 @@ import * as fs from 'fs'
 
 const services = [
   { name: 'loyalty-engine', path: 'services/loyalty-engine' },
-  { name: 'notification-service', path: 'services/notification-service' },
+  { name: 'notifications', path: 'services/notifications' },
 ]
 
 async function runSeeds() {

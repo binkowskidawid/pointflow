@@ -18,6 +18,11 @@ export class UsersRepository {
         email: data.email,
         phoneNumber: data.phoneNumber,
         name: data.name || data.email.split('@')[0] || 'Anonymous',
+        tenantId: data.tenantId,
+        role: data.role,
+        passwordHash: data.passwordHash,
+        twoFactorSecret: data.twoFactorSecret,
+        twoFactorEnabled: data.twoFactorEnabled,
         createdAt: new Date(),
         updatedAt: new Date(),
       })
@@ -27,6 +32,10 @@ export class UsersRepository {
           email: data.email,
           phoneNumber: data.phoneNumber,
           name: data.name || data.email.split('@')[0] || 'Anonymous',
+          role: data.role,
+          passwordHash: data.passwordHash,
+          twoFactorSecret: data.twoFactorSecret,
+          twoFactorEnabled: data.twoFactorEnabled,
           updatedAt: new Date(),
         },
       })

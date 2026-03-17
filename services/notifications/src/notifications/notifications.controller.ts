@@ -44,6 +44,12 @@ export class NotificationsController {
       email: data.email,
       name: data.name,
       phoneNumber: data.phoneNumber,
+      tenantId: data.tenantId,
+      role: data.role,
+      passwordHash: data.passwordHash,
+      twoFactorSecret: data.twoFactorSecret,
+      twoFactorEnabled: data.twoFactorEnabled,
+      updatedAt: new Date(),
     })
 
     if (!user || !user.email) {

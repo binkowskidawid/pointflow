@@ -59,7 +59,7 @@ By participating in this project, you agree to abide by our [Code of Conduct](./
 
    ```
    feat(loyalty-engine): add tier downgrade logic
-   fix(notification): handle missing email address gracefully
+   fix(notifications): handle missing email address gracefully
    docs(readme): update quick start steps
    ```
 
