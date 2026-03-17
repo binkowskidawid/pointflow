@@ -47,5 +47,27 @@ describe('PointsCalculator', () => {
         'promotion multiplier must be greater than 0',
       )
     })
+
+    it('handles bonus multiplier >1 (e.g. 2pts per PLN)', () => {
+      const bonusPromo: PromotionSnapshot = { ...basePromotion, multiplier: 2 }
+      expect(calculator.calculate(10000, bonusPromo)).toBe(200)
+    })
+
+    it('handles large amounts without precision loss', () => {
+      const promo: PromotionSnapshot = { ...basePromotion, multiplier: 0.3 }
+      expect(calculator.calculate(100000000, promo)).toBe(300000)
+    })
+
+    it('throws for negative multiplier (invalid promo)', () => {
+      const invalidPromo: PromotionSnapshot = { ...basePromotion, multiplier: -0.1 }
+      expect(() => calculator.calculate(10000, invalidPromo)).toThrow(
+        'promotion multiplier must be greater than 0',
+      )
+    })
+
+    it('boundary: 1 cent receipt gives 0 points (floor)', () => {
+      const promo: PromotionSnapshot = { ...basePromotion, multiplier: 1 }
+      expect(calculator.calculate(1, promo)).toBe(0)
+    })
   })
 })
