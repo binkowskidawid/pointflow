@@ -4,6 +4,7 @@ import * as path from 'path'
 import * as fs from 'fs'
 
 const services = [
+  { name: 'auth', path: 'services/auth' },
   { name: 'loyalty-engine', path: 'services/loyalty-engine' },
   { name: 'notifications', path: 'services/notifications' },
 ]

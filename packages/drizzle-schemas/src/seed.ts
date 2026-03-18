@@ -26,10 +26,18 @@ const db = drizzle(client)
 
 async function seed() {
   const isNotificationDb = connectionString.includes('pf_notifications')
-  console.log(`🌱 Seeding database: ${isNotificationDb ? 'NOTIFICATIONS' : 'LOYALTY'}...`)
+  const isAuthDb = connectionString.includes('pf_auth')
+  const dbType = isAuthDb ? 'AUTH' : isNotificationDb ? 'NOTIFICATIONS' : 'LOYALTY'
+  console.log(`🌱 Seeding database: ${dbType}...`)
 
   if (isNotificationDb) {
     await db.delete(users)
+    try {
+      await db.delete(tenants)
+    } catch (e) {}
+  } else if (isAuthDb) {
+    await db.delete(users)
+    await db.delete(tenants)
   } else {
     await db.delete(visits)
     await db.delete(loyaltyCards)
@@ -82,7 +90,7 @@ async function seed() {
     ])
     .returning()
 
-  if (!isNotificationDb) {
+  if (!isNotificationDb && !isAuthDb) {
     await db.insert(loyaltySettings).values([
       { tenantId: TENANT_ID_1, amountPerPoint: 1000 }, // 10 PLN = 1 pkt
       { tenantId: TENANT_ID_2, amountPerPoint: 2000 }, // 20 PLN = 1 pkt
@@ -169,7 +177,7 @@ async function seed() {
     }
   }
 
-  console.log(`✅ ${isNotificationDb ? 'NOTIFICATIONS' : 'LOYALTY'} seeding finished!`)
+  console.log(`✅ ${dbType} seeding finished!`)
   process.exit(0)
 }
 

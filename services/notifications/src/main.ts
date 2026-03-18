@@ -9,11 +9,11 @@ async function bootstrap() {
     transport: Transport.KAFKA,
     options: {
       client: {
-        clientId: process.env.KAFKA_CLIENT_ID || 'notification',
+        clientId: process.env.KAFKA_CLIENT_ID || 'notifications',
         brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
       },
       consumer: {
-        groupId: process.env.KAFKA_GROUP_ID || 'notification-consumer',
+        groupId: process.env.KAFKA_GROUP_ID || 'notifications-group',
       },
     },
   })
@@ -28,6 +28,6 @@ async function bootstrap() {
   )
 
   await app.listen()
-  console.log(`Notification Service is running`)
+  console.log(`Notifications Service is running`)
 }
 bootstrap()
