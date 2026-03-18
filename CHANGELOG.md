@@ -54,11 +54,19 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Data Simulator**: Introduced `scripts/simulate-user-created.ts` to mock Kafka events coming from Auth Service without actually deploying Auth Service yet.
 - **Materialized Views**: Added a Read Model via `UsersRepository` in `loyalty-engine` reacting to the `USER_CREATED` topic, synchronizing essential user info for internal processes.
 - **Point Accumulation System**: Integrated dynamic point calculation upon visits in `loyalty-engine` emitting explicit `PointsAwardedEvent` messages to Kafka.
-- **Notification Data Isolation**: Implemented a standalone user repository within `notifications` reacting to `USER_CREATED` to hold contact profiles securely for email dispatches.
 - **Dashboard Visibility**: Exposed `cardCode` on visit records within the `app/(dashboard)` views of the `web` frontend app.
+- **Auth Service**: Implemented the core Identity Provider service (`auth`) in NestJS 11 with hybrid TCP/Kafka communication.
+- **Identity Schema**: Updated `users` table with `passwordHash`, `role`, and `tenantId` (Multi-tenant scoped unique email).
+- **DTO Validation**: Converted all shared contracts (`CreateUserDto`, `CreateVisitDto`, `CreateLoyaltyCardDto`) to classes with `class-validator` decorators.
+- **Secure Password Hashing**: Integrated `bcrypt` in `AuthService` for one-way password encryption before persistence.
+- **Gateway Auth Integration**: Connected `api-gateway` to `auth` service via TCP and exposed `/api/v1/auth/register` and `/api/v1/auth/ping` endpoints.
+- **Frontend Auth Client**: Added `authApi` and `API_ROUTES.AUTH` constants to `apps/web` for frontend-to-backend authentication flow.
+- **Global DB Scripts**: Updated `db-migrate-all` and `db-seed-all` to include the new `pf_auth` database.
+- **Notifications Data Isolation**: Implemented a standalone user repository within `notifications` reacting to `USER_CREATED` to hold contact profiles securely for email dispatches.
 
 ### Fixed
 
+- **DTO Validation Support**: Enabled `experimentalDecorators` and `emitDecoratorMetadata` in `packages/contracts/tsconfig.json` to support `class-validator` in the shared package.
 - **UUID Parsing Errors**: Resolved `RpcExceptionsHandler` errors where identifiers (phone/code) were incorrectly treated as UUIDs by the database.
 - **Frontend Loading State**: Resolved `UND_ERR_HEADERS_TIMEOUT` by correcting API URLs and mapping to the new API Gateway port.
 - **Frontend Loading State**: Resolved `UND_ERR_HEADERS_TIMEOUT` by correcting API URLs and mapping to the new API Gateway port.
