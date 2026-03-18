@@ -1,13 +1,11 @@
 import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { LoggerModule } from 'nestjs-pino'
-import { MailerModule } from '@nestjs-modules/mailer'
-import { DatabaseModule } from './database/database.module'
+import { AuthModule } from './auth/auth.module'
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    DatabaseModule,
     LoggerModule.forRoot({
       pinoHttp: {
         customProps: () => ({
@@ -29,17 +27,7 @@ import { DatabaseModule } from './database/database.module'
             : undefined,
       },
     }),
-    MailerModule.forRoot({
-      transport: {
-        host: 'localhost',
-        port: 1025,
-        ignoreTLS: true,
-        secure: false,
-      },
-      defaults: {
-        from: '"PointFlow" <no-reply@pointflow.pl>',
-      },
-    }),
+    AuthModule,
   ],
 })
 export class AppModule {}

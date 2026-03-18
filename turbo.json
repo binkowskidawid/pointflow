@@ -6,6 +6,8 @@
     "DATABASE_URL",
     "NODE_ENV",
     "CORS_ORIGIN",
+    "AUTH_HOST",
+    "AUTH_PORT",
     "LOYALTY_ENGINE_HOST",
     "LOYALTY_ENGINE_PORT",
     "KAFKA_CLIENT_ID",
