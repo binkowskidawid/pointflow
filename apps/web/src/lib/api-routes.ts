@@ -5,5 +5,9 @@ export const API_ROUTES = {
     TENANT_VISITS: (tenantId: string) => `/loyalty/visits?tenantId=${tenantId}`,
     PING: '/loyalty/ping',
   },
-  // AUTH: { LOGIN: '/auth/login' }
+  AUTH: {
+    REGISTER: '/auth/register',
+    FIND_BY_EMAIL: '/auth/find-by-email',
+    PING: '/auth/ping',
+  },
 } as const

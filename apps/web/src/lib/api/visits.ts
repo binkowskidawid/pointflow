@@ -31,4 +31,12 @@ export const visitsApi = {
     const { data } = await apiClient.post<Visit>(API_ROUTES.LOYALTY.VISITS, dto)
     return data
   },
+
+  /**
+   * System: ping loyalty engine.
+   */
+  pingLoyaltyEngine: async (): Promise<string> => {
+    const { data } = await apiClient.get<string>(API_ROUTES.LOYALTY.PING)
+    return data
+  },
 }
