@@ -27,9 +27,11 @@ services:
         cockroach sql --insecure --host=cockroachdb --execute="
           CREATE DATABASE IF NOT EXISTS pf_loyalty;
           CREATE DATABASE IF NOT EXISTS pf_notifications;
+          CREATE DATABASE IF NOT EXISTS pf_auth;
           CREATE USER IF NOT EXISTS pointflow_user;
           GRANT ALL ON DATABASE pf_loyalty TO pointflow_user;
           GRANT ALL ON DATABASE pf_notifications TO pointflow_user;
+          GRANT ALL ON DATABASE pf_auth TO pointflow_user;
         "
 
   kafka:

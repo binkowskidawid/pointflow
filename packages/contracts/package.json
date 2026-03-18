@@ -17,6 +17,10 @@
     "typecheck": "tsc --noEmit",
     "dev": "tsc --watch"
   },
+  "dependencies": {
+    "class-validator": "^0.15.1",
+    "class-transformer": "^0.5.1"
+  },
   "devDependencies": {
     "@pointflow/typescript-config": "workspace:*",
     "typescript": "^5.9.3"

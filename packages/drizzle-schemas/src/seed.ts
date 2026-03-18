@@ -2,9 +2,10 @@ import 'dotenv/config'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import { loyaltyCards, visits, users, tenants, loyaltySettings } from './index'
-import { CardTier } from '@pointflow/contracts'
+import { CardTier, UserRole } from '@pointflow/contracts'
 import { randomUUID } from 'crypto'
 import { generateLoyaltyCardCode } from '@pointflow/utils'
+import * as bcrypt from 'bcrypt'
 
 const [USER_ID_1, USER_ID_2, USER_ID_3] = [
   '08098720-4118-438d-8711-50311d422b76',
@@ -25,11 +26,18 @@ const db = drizzle(client)
 
 async function seed() {
   const isNotificationDb = connectionString.includes('pf_notifications')
-  console.log(`🌱 Seeding database: ${isNotificationDb ? 'NOTIFICATIONS' : 'LOYALTY'}...`)
+  const isAuthDb = connectionString.includes('pf_auth')
+  const dbType = isAuthDb ? 'AUTH' : isNotificationDb ? 'NOTIFICATIONS' : 'LOYALTY'
+  console.log(`🌱 Seeding database: ${dbType}...`)
 
-  // 1. Delete old data (Careful: selective delete)
   if (isNotificationDb) {
     await db.delete(users)
+    try {
+      await db.delete(tenants)
+    } catch (e) {}
+  } else if (isAuthDb) {
+    await db.delete(users)
+    await db.delete(tenants)
   } else {
     await db.delete(visits)
     await db.delete(loyaltyCards)
@@ -38,7 +46,17 @@ async function seed() {
     await db.delete(loyaltySettings)
   }
 
-  // 2. Insert USERS (Common for both)
+  await db
+    .insert(tenants)
+    .values([
+      { id: TENANT_ID_1, name: 'Tenant 1', slug: 'tenant-1' },
+      { id: TENANT_ID_2, name: 'Tenant 2', slug: 'tenant-2' },
+      { id: TENANT_ID_3, name: 'Tenant 3', slug: 'tenant-3' },
+    ])
+    .returning()
+
+  const hashedPassword = await bcrypt.hash('password123', 10)
+
   await db
     .insert(users)
     .values([
@@ -47,28 +65,32 @@ async function seed() {
         email: 'jan@example.com',
         phoneNumber: '+48123456789',
         name: 'Jan Kowalski',
+        passwordHash: hashedPassword,
+        tenantId: TENANT_ID_1,
+        role: UserRole.RECEPTIONIST,
       },
-      { id: USER_ID_2, email: 'adam@example.com', phoneNumber: '+48123456788', name: 'Adam Nowak' },
+      {
+        id: USER_ID_2,
+        email: 'adam@example.com',
+        phoneNumber: '+48123456788',
+        name: 'Adam Nowak',
+        passwordHash: hashedPassword,
+        tenantId: TENANT_ID_2,
+        role: UserRole.MANAGER,
+      },
       {
         id: USER_ID_3,
         email: 'kasia@example.com',
         phoneNumber: '+48123456787',
         name: 'Katarzyna Los',
+        passwordHash: hashedPassword,
+        tenantId: TENANT_ID_3,
+        role: UserRole.CUSTOMER,
       },
     ])
     .returning()
 
-  // 3. Loyalty Specific Data
-  if (!isNotificationDb) {
-    await db
-      .insert(tenants)
-      .values([
-        { id: TENANT_ID_1, name: 'Tenant 1', slug: 'tenant-1' },
-        { id: TENANT_ID_2, name: 'Tenant 2', slug: 'tenant-2' },
-        { id: TENANT_ID_3, name: 'Tenant 3', slug: 'tenant-3' },
-      ])
-      .returning()
-
+  if (!isNotificationDb && !isAuthDb) {
     await db.insert(loyaltySettings).values([
       { tenantId: TENANT_ID_1, amountPerPoint: 1000 }, // 10 PLN = 1 pkt
       { tenantId: TENANT_ID_2, amountPerPoint: 2000 }, // 20 PLN = 1 pkt
@@ -155,7 +177,7 @@ async function seed() {
     }
   }
 
-  console.log(`✅ ${isNotificationDb ? 'NOTIFICATIONS' : 'LOYALTY'} seeding finished!`)
+  console.log(`✅ ${dbType} seeding finished!`)
   process.exit(0)
 }
 

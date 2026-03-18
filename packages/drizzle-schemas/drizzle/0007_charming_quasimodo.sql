@@ -1,1 +1,0 @@
-ALTER TABLE "loyalty_cards" ALTER COLUMN "code" SET NOT NULL;

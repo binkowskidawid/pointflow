@@ -38,11 +38,11 @@ Browser (Next.js 16)
   ├── Loyalty Engine  (TCP, port 3002)  ──► Kafka 4.2 KRaft
   └── Analytics       (HTTP + Kafka, port 3004)
                                               │
-                                    Notification Service
+                                    Notifications Service
                                       (Kafka consumer)
 
   All services ↔ CockroachDB v25.2 LTS via Drizzle ORM 0.45
-  (Database per Service: pf_loyalty, pf_notifications)
+  (Database per Service: pf_auth, pf_loyalty, pf_notifications)
 ```
 
 ## 🛠️ Tech Stack
@@ -73,7 +73,7 @@ pointflow/
 │   ├── api-gateway/      # Public HTTP entry point (NestJS 11, port 3001)
 │   ├── loyalty-engine/   # Points & tiers logic (NestJS TCP, port 3002)
 │   ├── auth/             # JWT authentication (NestJS, port 3003)
-│   ├── notification/     # Email delivery (NestJS Kafka consumer)
+│   ├── notifications/    # Email delivery (NestJS Kafka consumer)
 │   └── analytics/        # Statistics & reporting (NestJS HTTP + Kafka)
 ├── packages/
 │   ├── typescript-config/ # Shared tsconfig (base / nextjs / nestjs)
@@ -130,8 +130,11 @@ cp services/api-gateway/.env.example services/api-gateway/.env
 # Loyalty Engine
 cp services/loyalty-engine/.env.example services/loyalty-engine/.env
 
-# Notification Service
-cp services/notification-service/.env.example services/notification-service/.env
+# Notifications Service
+cp services/notifications/.env.example services/notifications/.env
+
+# Auth Service
+cp services/auth/.env.example services/auth/.env
 ```
 
 _Note: The default `.env.example` values are perfectly matched for the standard local `docker compose` footprint. You only need to edit them if you are changing infrastructure ports._
@@ -159,6 +162,7 @@ pnpm run dev
 | Admin Dashboard | <http://localhost:3000> |
 | API Gateway     | <http://localhost:3001> |
 | Loyalty Engine  | <http://localhost:3002> |
+| Auth Service    | <http://localhost:3003> |
 | Customer Portal | <http://localhost:3005> |
 | Kafka UI        | <http://localhost:8090> |
 | CockroachDB UI  | <http://localhost:8080> |
@@ -173,8 +177,9 @@ pnpm run dev
 - [x] **Stage 1** — Admin Dashboard (Next.js 16 + React Query + Tailwind 4)
 - [x] **Stage 2** — Kafka 4.2 KRaft integration
 - [x] **Stage 2** — API Gateway + TCP Internal Communication
-- [x] **Stage 2** — Notification Service (Kafka Consumer)
-- [ ] **Stage 2** — Auth Service (Registration, Login, JWT)
+- [x] **Stage 2** — Notifications Service (Kafka Consumer)
+- [/] **Stage 2** — Auth Service (Registration Flow & Validation)
+- [ ] **Stage 2** — Auth Service (Login & JWT Tokens)
 - [ ] **Stage 3** — Analytics Service + Customer Portal
 - [ ] **Stage 3** — v1.0.0 release with `quickstart.sh`
 - [ ] **Stage 4** — WebSockets real-time dashboard

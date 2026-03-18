@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { LoggerModule } from 'nestjs-pino'
 import { LoyaltyModule } from './loyalty/loyalty.module'
+import { AuthModule } from './auth/auth.module'
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -28,6 +29,7 @@ import { LoyaltyModule } from './loyalty/loyalty.module'
       forRoutes: ['*path'],
     }),
     LoyaltyModule,
+    AuthModule,
   ],
 })
 export class AppModule {}
