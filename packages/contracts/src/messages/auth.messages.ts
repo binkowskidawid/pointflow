@@ -4,6 +4,7 @@ export const AUTH_MESSAGES = {
     GET_BY_ID: 'auth.user.get_by_id',
     GET_ALL: 'auth.user.get_all',
     FIND_BY_EMAIL: 'auth.user.find_by_email',
+    LOGIN: 'auth.user.login',
   },
   INTERNAL: {
     PING: 'auth.internal.ping',

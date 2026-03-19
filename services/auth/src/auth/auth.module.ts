@@ -4,10 +4,15 @@ import { AuthService } from './auth.service'
 import { AuthRepository } from './auth.repository'
 import { DatabaseModule } from '../database/database.module'
 import { ClientsModule, Transport } from '@nestjs/microservices'
+import { JwtModule } from '@nestjs/jwt'
 
 @Module({
   imports: [
     DatabaseModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+      signOptions: { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as never },
+    }),
     ClientsModule.register([
       {
         name: 'KAFKA_SERVICE',

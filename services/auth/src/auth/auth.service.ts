@@ -1,9 +1,10 @@
-import { Inject, Injectable, Logger } from '@nestjs/common'
+import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common'
 import { AuthRepository } from './auth.repository'
 import { ClientKafka } from '@nestjs/microservices'
-import { KAFKA_TOPICS, type CreateUserDto } from '@pointflow/contracts'
+import { KAFKA_TOPICS, LoginDto, LoginResponseDto, type CreateUserDto } from '@pointflow/contracts'
 import type { User } from '@pointflow/types'
 import * as bcrypt from 'bcrypt'
+import { JwtService } from '@nestjs/jwt'
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,7 @@ export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
+    private readonly jwtService: JwtService,
   ) {}
 
   async onModuleInit() {
@@ -42,5 +44,38 @@ export class AuthService {
     tenantId: string
   }): Promise<User | null> {
     return this.authRepository.findByEmail({ email, tenantId })
+  }
+
+  async login(data: LoginDto): Promise<LoginResponseDto> {
+    const user = await this.authRepository.findByEmail({
+      email: data.email,
+      tenantId: data.tenantId,
+    })
+
+    if (!user) throw new UnauthorizedException('Invalid credentials')
+
+    const isPasswordValid = await bcrypt.compare(data.password, user.passwordHash)
+
+    if (!isPasswordValid) throw new UnauthorizedException('Invalid credentials')
+
+    const payload = {
+      sub: user.id,
+      email: user.email,
+      role: user.role,
+      tenantId: user.tenantId,
+      name: user.name,
+    }
+
+    return {
+      accessToken: this.jwtService.sign(payload),
+      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+        name: user.name || '',
+        tenantId: user.tenantId,
+      },
+    }
   }
 }
