@@ -5,10 +5,13 @@ import { AuthRepository } from './auth.repository'
 import { DatabaseModule } from '../database/database.module'
 import { ClientsModule, Transport } from '@nestjs/microservices'
 import { JwtModule } from '@nestjs/jwt'
+import { RedisModule } from '../redis/redis.module'
+import { TokenRepository } from '../token/token.repository'
 
 @Module({
   imports: [
     DatabaseModule,
+    RedisModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as never },
@@ -30,6 +33,6 @@ import { JwtModule } from '@nestjs/jwt'
     ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository],
+  providers: [AuthService, AuthRepository, TokenRepository],
 })
 export class AuthModule {}
