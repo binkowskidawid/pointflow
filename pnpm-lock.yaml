@@ -348,6 +348,9 @@ importers:
       '@types/node':
         specifier: ^24.x
         version: 24.11.0
+      '@types/passport-jwt':
+        specifier: ^4.0.1
+        version: 4.0.1
       eslint:
         specifier: ^10.0.3
         version: 10.0.3(jiti@2.6.1)

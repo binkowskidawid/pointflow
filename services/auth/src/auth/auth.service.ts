@@ -5,6 +5,7 @@ import { KAFKA_TOPICS, LoginDto, LoginResponseDto, type CreateUserDto } from '@p
 import type { User } from '@pointflow/types'
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
+import { TokenRepository } from 'src/token/token.repository'
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,7 @@ export class AuthService {
   constructor(
     private readonly authRepository: AuthRepository,
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
+    private readonly tokenRepository: TokenRepository,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -66,9 +68,14 @@ export class AuthService {
       name: user.name,
     }
 
+    const refreshToken = this.jwtService.sign(payload, { expiresIn: '7d' })
+    const ttlSeconds = 60 * 60 * 24 * 7
+
+    await this.tokenRepository.storeRefreshToken(user.id, refreshToken, ttlSeconds)
+
     return {
       accessToken: this.jwtService.sign(payload),
-      refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
