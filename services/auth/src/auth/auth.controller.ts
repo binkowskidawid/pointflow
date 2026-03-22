@@ -27,4 +27,14 @@ export class AuthController {
   async login(@Payload() data: LoginDto): Promise<LoginResponseDto> {
     return this.authService.login(data)
   }
+
+  @MessagePattern(AUTH_MESSAGES.USER.REFRESH)
+  async refresh(@Payload() data: { refreshToken: string }): Promise<LoginResponseDto> {
+    return this.authService.refresh(data.refreshToken)
+  }
+
+  @MessagePattern(AUTH_MESSAGES.USER.LOGOUT)
+  async logout(@Payload() data: { refreshToken: string }): Promise<void> {
+    return this.authService.logout(data.refreshToken)
+  }
 }

@@ -1,5 +1,6 @@
+import 'reflect-metadata'
 import { Type } from 'class-transformer'
-import { IsEmail, IsNotEmpty, IsString, MinLength, ValidateNested } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsString, ValidateNested } from 'class-validator'
 
 export class LoginDto {
   @IsEmail({}, { message: 'Invalid email address' })

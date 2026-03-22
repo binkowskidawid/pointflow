@@ -147,6 +147,9 @@ importers:
       class-validator:
         specifier: ^0.15.1
         version: 0.15.1
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
     devDependencies:
       '@pointflow/typescript-config':
         specifier: workspace:*

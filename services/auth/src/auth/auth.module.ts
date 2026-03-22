@@ -12,9 +12,11 @@ import { TokenRepository } from '../token/token.repository'
   imports: [
     DatabaseModule,
     RedisModule,
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as never },
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        secret: process.env.JWT_SECRET,
+        signOptions: { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as never },
+      }),
     }),
     ClientsModule.register([
       {
