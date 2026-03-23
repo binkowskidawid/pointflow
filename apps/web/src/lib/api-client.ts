@@ -1,4 +1,4 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import axios, { AxiosHeaders, type AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { API_ROUTES } from '@/lib/api-routes'
 import { clearSession, getAccessToken, refreshSession } from '@/lib/auth/session'
 
@@ -32,13 +32,34 @@ function shouldSkipRefresh(requestUrl: string | undefined): boolean {
   return AUTH_ROUTES_THAT_SHOULD_NOT_REFRESH.some((route) => requestUrl.includes(route))
 }
 
+function setAuthorizationHeader(
+  request: { headers?: InternalAxiosRequestConfig['headers'] },
+  accessToken: string | null,
+): void {
+  if (!accessToken) {
+    return
+  }
+
+  request.headers = request.headers ?? new AxiosHeaders()
+  request.headers.set('Authorization', `Bearer ${accessToken}`)
+}
+
+function shouldAttemptRefresh(
+  error: AxiosError,
+  request: RetryableRequest | undefined,
+): request is RetryableRequest {
+  return (
+    error.response?.status === 401 &&
+    request !== undefined &&
+    !request._retry &&
+    !shouldSkipRefresh(request.url)
+  )
+}
+
 apiClient.interceptors.request.use((config) => {
   const accessToken = getAccessToken()
 
-  if (accessToken) {
-    config.headers = config.headers ?? {}
-    config.headers.Authorization = `Bearer ${accessToken}`
-  }
+  setAuthorizationHeader(config, accessToken)
 
   return config
 })
@@ -52,20 +73,14 @@ apiClient.interceptors.response.use(
     }
 
     const originalRequest = error.config as RetryableRequest | undefined
-    const shouldAttemptRefresh =
-      error.response?.status === 401 &&
-      originalRequest &&
-      !originalRequest._retry &&
-      !shouldSkipRefresh(originalRequest.url)
 
-    if (shouldAttemptRefresh) {
+    if (shouldAttemptRefresh(error, originalRequest)) {
       originalRequest._retry = true
 
       const session = await refreshSession()
 
       if (session?.accessToken) {
-        originalRequest.headers = originalRequest.headers ?? {}
-        originalRequest.headers.Authorization = `Bearer ${session.accessToken}`
+        setAuthorizationHeader(originalRequest, session.accessToken)
         return await apiClient.request(originalRequest)
       }
 

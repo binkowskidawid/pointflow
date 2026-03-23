@@ -136,6 +136,7 @@ export class AuthController {
   }
 
   private toPublicLoginResponse(session: LoginResponseDto): PublicLoginResponse {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { refreshToken, ...publicSession } = session
     return publicSession
   }
