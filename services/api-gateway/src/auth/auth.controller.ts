@@ -9,14 +9,13 @@ import {
   Req,
   Res,
   UnauthorizedException,
-  UseGuards,
 } from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { firstValueFrom, Observable } from 'rxjs'
 import { CreateUserDto, LoginDto, LoginResponseDto } from '@pointflow/contracts'
 import type { User } from '@pointflow/types'
-import { JwtAuthGuard } from './jwt-auth.guard'
 import type { Request, Response } from 'express'
+import { Public } from './public.decorator'
 
 type PublicLoginResponse = Omit<LoginResponseDto, 'refreshToken'>
 type RequestWithUser = Request & {
@@ -59,17 +58,20 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
+  @Public()
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: CreateUserDto): Promise<User> {
     return await firstValueFrom(this.authService.register(dto))
   }
 
   @Get('find-by-email')
+  @Public()
   async findByEmail(@Query() query: { email: string; tenantId: string }): Promise<User | null> {
     return await firstValueFrom(this.authService.findByEmail(query))
   }
 
   @Post('login')
+  @Public()
   @HttpCode(HttpStatus.OK)
   async login(
     @Body() dto: LoginDto,
@@ -81,6 +83,7 @@ export class AuthController {
   }
 
   @Post('refresh')
+  @Public()
   @HttpCode(HttpStatus.OK)
   async refresh(
     @Req() request: Request,
@@ -98,6 +101,7 @@ export class AuthController {
   }
 
   @Post('logout')
+  @Public()
   @HttpCode(HttpStatus.NO_CONTENT)
   async logout(
     @Req() request: Request,
@@ -113,12 +117,12 @@ export class AuthController {
   }
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
   me(@Req() request: RequestWithUser): LoginResponseDto['user'] {
     return request.user
   }
 
   @Get('ping')
+  @Public()
   pingAuthService(): Observable<string> {
     return this.authService.pingAuth()
   }

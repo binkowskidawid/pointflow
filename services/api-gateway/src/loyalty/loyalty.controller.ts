@@ -3,6 +3,7 @@ import { LoyaltyService } from './loyalty.service'
 import { firstValueFrom, Observable } from 'rxjs'
 import { CreateVisitDto } from '@pointflow/contracts'
 import type { Visit } from '@pointflow/types'
+import { Public } from '../auth/public.decorator'
 
 @Controller('loyalty')
 export class LoyaltyController {
@@ -28,6 +29,7 @@ export class LoyaltyController {
   }
 
   @Get('ping')
+  @Public()
   pingLoyaltyService(): Observable<string> {
     return this.loyaltyService.pingLoyalty()
   }
