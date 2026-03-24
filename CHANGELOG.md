@@ -63,6 +63,19 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Frontend Auth Client**: Added `authApi` and `API_ROUTES.AUTH` constants to `apps/web` for frontend-to-backend authentication flow.
 - **Global DB Scripts**: Updated `db-migrate-all` and `db-seed-all` to include the new `pf_auth` database.
 - **Notifications Data Isolation**: Implemented a standalone user repository within `notifications` reacting to `USER_CREATED` to hold contact profiles securely for email dispatches.
+- **JWT Login Flow**: Implemented complete `/auth/login` endpoint in `auth` service — validates credentials with `bcrypt`, issues short-lived access token (15m) and long-lived refresh token (7d) signed with separate secrets (`JWT_SECRET` / `JWT_REFRESH_SECRET`).
+- **Redis Token Repository**: `TokenRepository` in `auth` service stores refresh tokens as `refresh_token:{userId}:{token}` with 7-day TTL. Supports token existence check, rotation, and explicit revocation on logout.
+- **Token Rotation**: On each `POST /auth/refresh`, the old refresh token is atomically deleted from Redis and a new pair issued — prevents replay attacks.
+- **HttpOnly Refresh Cookie**: Refresh token delivered exclusively via `Set-Cookie` with `HttpOnly`, `SameSite: lax`, `Path: /api/v1/auth`. `Secure` flag enabled in production. Never accessible from JavaScript.
+- **`LoginDto`**: New shared contract in `@pointflow/contracts` with `class-validator` decorators for `tenantId`, `email`, `password` fields.
+- **JwtStrategy**: Passport JWT strategy in `api-gateway` validates `Authorization: Bearer` header and extracts `{id, email, tenantId, role, name}` into `req.user` for downstream use.
+- **Global JwtAuthGuard**: All `api-gateway` routes protected by default via `APP_GUARD` DI token — deny-by-default security model.
+- **`@Public()` decorator**: `SetMetadata`-based decorator for explicit opt-out from JWT guard on public endpoints (`login`, `register`, `refresh`, `logout`, `ping`).
+- **Frontend Session Management** (`apps/web/src/lib/auth/session.ts`): In-memory access token store using module-level variable + `useSyncExternalStore`. Includes `bootstrapSession()` for silent session restore on app start and deduplication of concurrent refresh calls via shared `Promise`.
+- **Axios Interceptor with 401 Retry**: Request interceptor attaches `Authorization: Bearer` from in-memory token. Response interceptor transparently retries failed requests after silent token refresh on 401.
+- **Login Page** (`apps/web/src/app/(auth)/login/page.tsx`): Full login form with `tenantId`, `email`, `password`. On success: `setSession(accessToken)` + `router.replace('/')`.
+- **AuthGate component**: Client component that reads auth state and redirects unauthenticated users to `/login`. Used in `(dashboard)/layout.tsx` to protect all dashboard routes.
+- **AuthBootstrapper component**: Fires `bootstrapSession()` on app mount — restores JWT session from HttpOnly cookie without user interaction.
 
 ### Fixed
 
