@@ -15,9 +15,6 @@ type SessionPayload = {
   name?: string | null
 }
 
-const REFRESH_TOKEN_TTL_SECONDS = 60 * 60 * 24 * 7
-const REFRESH_TOKEN_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d'
-
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name)
@@ -27,6 +24,8 @@ export class AuthService {
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
     private readonly tokenRepository: TokenRepository,
     private readonly jwtService: JwtService,
+    @Inject('AUTH_REFRESH_SECRET') private readonly refreshTokenSecret: string,
+    @Inject('AUTH_REFRESH_TOKEN_TTL_SECONDS') private readonly refreshTokenTtlSeconds: number,
   ) {}
 
   async onModuleInit() {
@@ -82,34 +81,32 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token')
     }
 
-    const isStored = await this.tokenRepository.exists(user.id, refreshToken)
+    const wasValid = await this.tokenRepository.getAndDelete(user.id, refreshToken)
 
-    if (!isStored) {
+    if (!wasValid) {
       throw new UnauthorizedException('Refresh token has been revoked')
     }
 
-    await this.tokenRepository.delete(user.id, refreshToken)
     return await this.createSession(user)
   }
 
   async logout(refreshToken: string): Promise<void> {
-    const payload = this.jwtService.decode(refreshToken) as SessionPayload | null
-
-    if (!payload?.sub) {
-      return
+    try {
+      const payload = this.verifyRefreshToken(refreshToken)
+      await this.tokenRepository.delete(payload.sub, refreshToken)
+    } catch {
+      // Invalid/expired token — logout is best-effort, silently discard
     }
-
-    await this.tokenRepository.delete(payload.sub, refreshToken)
   }
 
   private async createSession(user: User): Promise<LoginResponseDto> {
     const payload = this.createSessionPayload(user)
     const refreshToken = this.jwtService.sign(payload, {
-      secret: this.getRefreshTokenSecret(),
-      expiresIn: REFRESH_TOKEN_EXPIRES_IN as never,
+      secret: this.refreshTokenSecret,
+      expiresIn: this.refreshTokenTtlSeconds,
     })
 
-    await this.tokenRepository.storeRefreshToken(user.id, refreshToken, REFRESH_TOKEN_TTL_SECONDS)
+    await this.tokenRepository.storeRefreshToken(user.id, refreshToken, this.refreshTokenTtlSeconds)
 
     return {
       accessToken: this.jwtService.sign(payload),
@@ -141,15 +138,11 @@ export class AuthService {
   private verifyRefreshToken(refreshToken: string): SessionPayload {
     try {
       return this.jwtService.verify<SessionPayload>(refreshToken, {
-        secret: this.getRefreshTokenSecret(),
+        secret: this.refreshTokenSecret,
       })
     } catch {
       this.logger.warn('Refresh token verification failed')
       throw new UnauthorizedException('Invalid refresh token')
     }
-  }
-
-  private getRefreshTokenSecret(): string {
-    return process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || ''
   }
 }

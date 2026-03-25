@@ -20,7 +20,6 @@ const AUTH_ROUTES_THAT_SHOULD_NOT_REFRESH = [
   API_ROUTES.AUTH.LOGIN,
   API_ROUTES.AUTH.REFRESH,
   API_ROUTES.AUTH.LOGOUT,
-  API_ROUTES.AUTH.FIND_BY_EMAIL,
   API_ROUTES.AUTH.PING,
 ] as const
 
@@ -40,8 +39,9 @@ function setAuthorizationHeader(
     return
   }
 
-  request.headers = request.headers ?? new AxiosHeaders()
-  request.headers.set('Authorization', `Bearer ${accessToken}`)
+  const normalizedHeaders = AxiosHeaders.from(request.headers ?? {})
+  normalizedHeaders.set('Authorization', `Bearer ${accessToken}`)
+  request.headers = normalizedHeaders
 }
 
 function shouldAttemptRefresh(

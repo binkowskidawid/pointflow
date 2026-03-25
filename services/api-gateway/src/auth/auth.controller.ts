@@ -5,7 +5,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Query,
   Req,
   Res,
   UnauthorizedException,
@@ -53,6 +52,15 @@ function buildRefreshCookieOptions() {
   }
 }
 
+function buildRefreshCookieClearOptions() {
+  return {
+    httpOnly: true,
+    sameSite: 'lax' as const,
+    secure: process.env.NODE_ENV === 'production',
+    path: REFRESH_COOKIE_PATH,
+  }
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -62,12 +70,6 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: CreateUserDto): Promise<User> {
     return await firstValueFrom(this.authService.register(dto))
-  }
-
-  @Get('find-by-email')
-  @Public()
-  async findByEmail(@Query() query: { email: string; tenantId: string }): Promise<User | null> {
-    return await firstValueFrom(this.authService.findByEmail(query))
   }
 
   @Post('login')
@@ -136,7 +138,7 @@ export class AuthController {
   }
 
   private clearRefreshTokenCookie(response: Response): void {
-    response.clearCookie(REFRESH_COOKIE_NAME, buildRefreshCookieOptions())
+    response.clearCookie(REFRESH_COOKIE_NAME, buildRefreshCookieClearOptions())
   }
 
   private toPublicLoginResponse(session: LoginResponseDto): PublicLoginResponse {

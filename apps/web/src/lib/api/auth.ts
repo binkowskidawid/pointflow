@@ -2,7 +2,7 @@ import type { CreateUserDto, LoginDto, LoginResponseDto } from '@pointflow/contr
 import type { User } from '@pointflow/types'
 import { apiClient } from '@/lib/api-client'
 import { API_ROUTES } from '@/lib/api-routes'
-import { clearSession, logoutSession, setSession } from '@/lib/auth/session'
+import { logoutSession, setSession } from '@/lib/auth/session'
 
 type PublicLoginResponse = Omit<LoginResponseDto, 'refreshToken'>
 
@@ -15,22 +15,6 @@ export const authApi = {
     return data
   },
 
-  /**
-   * User: find user by email.
-   */
-  findByEmail: async ({
-    email,
-    tenantId,
-  }: {
-    email: string
-    tenantId: string
-  }): Promise<User | null> => {
-    const { data } = await apiClient.get<User | null>(API_ROUTES.AUTH.FIND_BY_EMAIL, {
-      params: { email, tenantId },
-    })
-    return data
-  },
-
   login: async (dto: LoginDto): Promise<PublicLoginResponse> => {
     const { data } = await apiClient.post<PublicLoginResponse>(API_ROUTES.AUTH.LOGIN, dto)
     setSession(data.accessToken)
@@ -39,7 +23,6 @@ export const authApi = {
 
   logout: async (): Promise<void> => {
     await logoutSession()
-    clearSession()
   },
 
   /**

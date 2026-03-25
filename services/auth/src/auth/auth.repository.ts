@@ -27,11 +27,11 @@ export class AuthRepository {
       .select()
       .from(users)
       .where(and(eq(users.email, email), eq(users.tenantId, tenantId)))
-    return found as unknown as User
+    return found ? (found as User) : null
   }
 
   async findById(id: string): Promise<User | null> {
     const [found] = await this.db.select().from(users).where(eq(users.id, id))
-    return found as unknown as User
+    return found ? (found as User) : null
   }
 }

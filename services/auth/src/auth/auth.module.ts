@@ -7,15 +7,28 @@ import { ClientsModule, Transport } from '@nestjs/microservices'
 import { JwtModule } from '@nestjs/jwt'
 import { RedisModule } from '../redis/redis.module'
 import { TokenRepository } from '../token/token.repository'
+import { ConfigService } from '@nestjs/config'
+import { getJwtAccessExpirySeconds, getJwtRefreshExpirySeconds, getRequiredEnv } from './auth.utils'
 
 @Module({
   imports: [
     DatabaseModule,
     RedisModule,
     JwtModule.registerAsync({
-      useFactory: () => ({
-        secret: process.env.JWT_SECRET,
-        signOptions: { expiresIn: (process.env.JWT_EXPIRES_IN || '15m') as never },
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        secret: getRequiredEnv('JWT_SECRET', configService.get<string>('JWT_SECRET')),
+        signOptions: {
+          expiresIn: getJwtAccessExpirySeconds(configService.get<string>('JWT_EXPIRES_IN')),
+          algorithm: 'HS256',
+          issuer: 'pointflow-auth',
+          audience: 'pointflow-api',
+        },
+        verifyOptions: {
+          algorithms: ['HS256'],
+          issuer: 'pointflow-auth',
+          audience: 'pointflow-api',
+        },
       }),
     }),
     ClientsModule.register([
@@ -35,6 +48,22 @@ import { TokenRepository } from '../token/token.repository'
     ]),
   ],
   controllers: [AuthController],
-  providers: [AuthService, AuthRepository, TokenRepository],
+  providers: [
+    AuthService,
+    AuthRepository,
+    TokenRepository,
+    {
+      provide: 'AUTH_REFRESH_SECRET',
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        getRequiredEnv('JWT_REFRESH_SECRET', configService.get<string>('JWT_REFRESH_SECRET')),
+    },
+    {
+      provide: 'AUTH_REFRESH_TOKEN_TTL_SECONDS',
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) =>
+        getJwtRefreshExpirySeconds(configService.get<string>('JWT_REFRESH_EXPIRES_IN')),
+    },
+  ],
 })
 export class AuthModule {}

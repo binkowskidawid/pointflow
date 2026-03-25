@@ -64,8 +64,8 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Global DB Scripts**: Updated `db-migrate-all` and `db-seed-all` to include the new `pf_auth` database.
 - **Notifications Data Isolation**: Implemented a standalone user repository within `notifications` reacting to `USER_CREATED` to hold contact profiles securely for email dispatches.
 - **JWT Login Flow**: Implemented complete `/auth/login` endpoint in `auth` service — validates credentials with `bcrypt`, issues short-lived access token (15m) and long-lived refresh token (7d) signed with separate secrets (`JWT_SECRET` / `JWT_REFRESH_SECRET`).
-- **Redis Token Repository**: `TokenRepository` in `auth` service stores refresh tokens as `refresh_token:{userId}:{token}` with 7-day TTL. Supports token existence check, rotation, and explicit revocation on logout.
-- **Token Rotation**: On each `POST /auth/refresh`, the old refresh token is atomically deleted from Redis and a new pair issued — prevents replay attacks.
+- **Redis Token Repository**: `TokenRepository` in `auth` service stores refresh tokens as `refresh_token:{userId}:{sha256(token)}` with 7-day TTL. Supports token existence check, rotation, and explicit revocation on logout.
+- **Token Rotation**: On each `POST /auth/refresh`, the old refresh token is deleted from Redis and a new pair issued — prevents replay attacks.
 - **HttpOnly Refresh Cookie**: Refresh token delivered exclusively via `Set-Cookie` with `HttpOnly`, `SameSite: lax`, `Path: /api/v1/auth`. `Secure` flag enabled in production. Never accessible from JavaScript.
 - **`LoginDto`**: New shared contract in `@pointflow/contracts` with `class-validator` decorators for `tenantId`, `email`, `password` fields.
 - **JwtStrategy**: Passport JWT strategy in `api-gateway` validates `Authorization: Bearer` header and extracts `{id, email, tenantId, role, name}` into `req.user` for downstream use.

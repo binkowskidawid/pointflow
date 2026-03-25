@@ -7,7 +7,6 @@ export const API_ROUTES = {
   },
   AUTH: {
     REGISTER: '/auth/register',
-    FIND_BY_EMAIL: '/auth/find-by-email',
     LOGIN: '/auth/login',
     REFRESH: '/auth/refresh',
     LOGOUT: '/auth/logout',
