@@ -43,6 +43,7 @@ yarn-error.log*
 .cursorrules
 CLAUDE.md
 GEMINI.md
+AGENTS.md
 
 # Docs
 .docs

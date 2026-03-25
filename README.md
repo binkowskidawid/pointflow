@@ -178,8 +178,8 @@ pnpm run dev
 - [x] **Stage 2** — Kafka 4.2 KRaft integration
 - [x] **Stage 2** — API Gateway + TCP Internal Communication
 - [x] **Stage 2** — Notifications Service (Kafka Consumer)
-- [/] **Stage 2** — Auth Service (Registration Flow & Validation)
-- [ ] **Stage 2** — Auth Service (Login & JWT Tokens)
+- [x] **Stage 2** — Auth Service (Registration Flow & Validation)
+- [x] **Stage 2** — Auth Service (Login & JWT Tokens + Frontend Auth Flow)
 - [ ] **Stage 3** — Analytics Service + Customer Portal
 - [ ] **Stage 3** — v1.0.0 release with `quickstart.sh`
 - [ ] **Stage 4** — WebSockets real-time dashboard

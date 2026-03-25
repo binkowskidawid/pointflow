@@ -1,6 +1,6 @@
 import { Controller } from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { AUTH_MESSAGES, CreateUserDto } from '@pointflow/contracts'
+import { AUTH_MESSAGES, CreateUserDto, LoginDto, LoginResponseDto } from '@pointflow/contracts'
 import { MessagePattern, Payload } from '@nestjs/microservices'
 import type { User } from '@pointflow/types'
 
@@ -21,5 +21,20 @@ export class AuthController {
   @MessagePattern(AUTH_MESSAGES.INTERNAL.PING)
   ping() {
     return 'Auth Service is alive! 🛡️'
+  }
+
+  @MessagePattern(AUTH_MESSAGES.USER.LOGIN)
+  async login(@Payload() data: LoginDto): Promise<LoginResponseDto> {
+    return this.authService.login(data)
+  }
+
+  @MessagePattern(AUTH_MESSAGES.USER.REFRESH)
+  async refresh(@Payload() data: { refreshToken: string }): Promise<LoginResponseDto> {
+    return this.authService.refresh(data.refreshToken)
+  }
+
+  @MessagePattern(AUTH_MESSAGES.USER.LOGOUT)
+  async logout(@Payload() data: { refreshToken: string }): Promise<void> {
+    return this.authService.logout(data.refreshToken)
   }
 }

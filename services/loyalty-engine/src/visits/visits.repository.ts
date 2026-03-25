@@ -16,7 +16,11 @@ export class VisitsRepository {
   }
 
   async findAll({ tenantId }: { tenantId: string }): Promise<Visit[]> {
-    const allVisits = await this.db.select().from(visits).where(eq(visits.tenantId, tenantId))
+    const allVisits = await this.db
+      .select()
+      .from(visits)
+      .where(eq(visits.tenantId, tenantId))
+      .orderBy(desc(visits.occurredAt))
     return allVisits as unknown as Visit[]
   }
 

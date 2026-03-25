@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { PlusCircle, CheckCircle2 } from 'lucide-react'
-import { Currency } from '@pointflow/contracts'
+import { Currency } from '@pointflow/contracts/enums'
 import { visitsApi } from '@/lib/api/visits'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -41,6 +41,9 @@ export function RegisterVisitView() {
     onSuccess: (visit) => {
       // Invalidate card visits cache so Check Card page auto-refreshes
       void queryClient.invalidateQueries({ queryKey: ['visits', 'card', visit.cardId] })
+      void queryClient.invalidateQueries({
+        queryKey: ['dashboard', 'tenant-visits', visit.tenantId],
+      })
       toast.success(`Visit registered — ${visit.pointsEarned} points awarded!`)
       setForm(INITIAL_FORM)
     },

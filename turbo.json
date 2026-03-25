@@ -15,7 +15,13 @@
     "KAFKA_CLIENT_ID_CLIENT",
     "KAFKA_BROKER",
     "KAFKA_GROUP_ID",
-    "DEMO_EMAIL"
+    "DEMO_EMAIL",
+    "JWT_SECRET",
+    "JWT_EXPIRES_IN",
+    "JWT_REFRESH_SECRET",
+    "JWT_REFRESH_EXPIRES_IN",
+    "REDIS_HOST",
+    "REDIS_PORT"
   ],
   "tasks": {
     "build": {
