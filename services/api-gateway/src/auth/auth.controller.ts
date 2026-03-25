@@ -9,6 +9,7 @@ import {
   Res,
   UnauthorizedException,
 } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { AuthService } from './auth.service'
 import { firstValueFrom, Observable } from 'rxjs'
 import { CreateUserDto, LoginDto, LoginResponseDto } from '@pointflow/contracts'
@@ -22,8 +23,15 @@ type RequestWithUser = Request & {
 }
 
 const REFRESH_COOKIE_NAME = 'pointflow_refresh_token'
-const REFRESH_COOKIE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000
 const REFRESH_COOKIE_PATH = '/api/v1/auth'
+
+function parseExpiryToSeconds(value: string): number {
+  const match = /^(\d+)([smhd])$/.exec(value.trim())
+  if (!match) return 7 * 24 * 60 * 60
+  const amount = Number.parseInt(match[1]!, 10)
+  const units: Record<string, number> = { s: 1, m: 60, h: 3_600, d: 86_400 }
+  return amount * (units[match[2]!] ?? 1)
+}
 
 function parseCookie(headerValue: string | undefined, cookieName: string): string | null {
   if (!headerValue) {
@@ -42,13 +50,13 @@ function parseCookie(headerValue: string | undefined, cookieName: string): strin
   return decodeURIComponent(match.slice(cookieName.length + 1))
 }
 
-function buildRefreshCookieOptions() {
+function buildRefreshCookieOptions(maxAgeMs: number) {
   return {
     httpOnly: true,
     sameSite: 'lax' as const,
     secure: process.env.NODE_ENV === 'production',
     path: REFRESH_COOKIE_PATH,
-    maxAge: REFRESH_COOKIE_MAX_AGE_MS,
+    maxAge: maxAgeMs,
   }
 }
 
@@ -63,7 +71,15 @@ function buildRefreshCookieClearOptions() {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  private readonly refreshCookieMaxAgeMs: number
+
+  constructor(
+    private readonly authService: AuthService,
+    configService: ConfigService,
+  ) {
+    const expiresIn = configService.get<string>('JWT_REFRESH_EXPIRES_IN', '7d')
+    this.refreshCookieMaxAgeMs = parseExpiryToSeconds(expiresIn) * 1_000
+  }
 
   @Post('register')
   @Public()
@@ -134,7 +150,11 @@ export class AuthController {
   }
 
   private setRefreshTokenCookie(response: Response, refreshToken: string): void {
-    response.cookie(REFRESH_COOKIE_NAME, refreshToken, buildRefreshCookieOptions())
+    response.cookie(
+      REFRESH_COOKIE_NAME,
+      refreshToken,
+      buildRefreshCookieOptions(this.refreshCookieMaxAgeMs),
+    )
   }
 
   private clearRefreshTokenCookie(response: Response): void {

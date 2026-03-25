@@ -15,6 +15,10 @@ type SessionPayload = {
   name?: string | null
 }
 
+type RefreshTokenPayload = {
+  sub: string
+}
+
 @Injectable()
 export class AuthService {
   private readonly logger = new Logger(AuthService.name)
@@ -101,7 +105,8 @@ export class AuthService {
 
   private async createSession(user: User): Promise<LoginResponseDto> {
     const payload = this.createSessionPayload(user)
-    const refreshToken = this.jwtService.sign(payload, {
+    // Refresh token carries only `sub` — minimise exposure if the token is leaked
+    const refreshToken = this.jwtService.sign({ sub: user.id } satisfies RefreshTokenPayload, {
       secret: this.refreshTokenSecret,
       expiresIn: this.refreshTokenTtlSeconds,
     })
@@ -135,9 +140,9 @@ export class AuthService {
     }
   }
 
-  private verifyRefreshToken(refreshToken: string): SessionPayload {
+  private verifyRefreshToken(refreshToken: string): RefreshTokenPayload {
     try {
-      return this.jwtService.verify<SessionPayload>(refreshToken, {
+      return this.jwtService.verify<RefreshTokenPayload>(refreshToken, {
         secret: this.refreshTokenSecret,
       })
     } catch {
