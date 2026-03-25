@@ -146,7 +146,7 @@ export class AuthService {
         secret: this.refreshTokenSecret,
       })
     } catch {
-      this.logger.warn('Refresh token verification failed')
+      this.logger.debug('Refresh token verification failed')
       throw new UnauthorizedException('Invalid refresh token')
     }
   }
