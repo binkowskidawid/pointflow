@@ -1,4 +1,4 @@
-import { LayoutDashboard, CreditCard, PlusCircle } from 'lucide-react'
+import { LayoutDashboard, CreditCard, PlusCircle, Settings } from 'lucide-react'
 
 export const navItems = [
   {
@@ -15,5 +15,10 @@ export const navItems = [
     label: 'Register Visit',
     href: '/visits/new',
     icon: PlusCircle,
+  },
+  {
+    label: 'Settings',
+    href: '/settings',
+    icon: Settings,
   },
 ] as const

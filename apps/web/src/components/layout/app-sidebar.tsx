@@ -5,7 +5,10 @@ import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
-import { navItems, bottomItems } from '@/constants'
+import { navItems } from '@/constants'
+import { Button } from '../ui/button'
+import { authApi } from '@/lib/api/auth'
+import { useRouter } from 'next/navigation'
 
 type NavItem = {
   label: string
@@ -39,6 +42,12 @@ function NavLink({ item }: { item: NavItem }) {
 }
 
 export function AppSidebar() {
+  const router = useRouter()
+  const handleLogout = async () => {
+    await authApi.logout()
+    router.replace('/login')
+  }
+
   return (
     <aside className="flex h-full flex-col bg-zinc-950 border-r border-zinc-800/60">
       {/* Logo */}
@@ -67,11 +76,11 @@ export function AppSidebar() {
 
       <Separator />
 
-      {/* Bottom nav */}
+      {/* Logout */}
       <div className="flex flex-col gap-1 px-3 py-4">
-        {bottomItems.map((item) => (
-          <NavLink key={item.href} item={item} />
-        ))}
+        <Button size="sm" className="w-full" variant="destructive" onClick={handleLogout}>
+          Logout
+        </Button>
       </div>
     </aside>
   )
