@@ -115,14 +115,19 @@ export async function bootstrapSession(): Promise<void> {
 
 export async function logoutSession(): Promise<void> {
   try {
-    await fetch(`${AUTH_BASE_URL}${API_ROUTES.AUTH.LOGOUT}`, {
+    const response = await fetch(`${AUTH_BASE_URL}${API_ROUTES.AUTH.LOGOUT}`, {
       method: 'POST',
       credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
     })
-  } finally {
+    if (!response.ok) {
+      throw new Error(`Logout failed with status ${response.status}`)
+    }
+
     clearSession()
+  } catch (error) {
+    throw new Error('Failed to logout', { cause: error })
   }
 }

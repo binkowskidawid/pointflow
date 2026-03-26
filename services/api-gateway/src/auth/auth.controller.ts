@@ -145,7 +145,9 @@ export class AuthController {
     const refreshToken = this.readRefreshToken(request)
 
     if (refreshToken) {
-      await firstValueFrom(this.authService.logout(refreshToken))
+      await firstValueFrom(this.authService.logout(refreshToken), {
+        defaultValue: undefined,
+      })
     }
 
     this.clearRefreshTokenCookie(response)
