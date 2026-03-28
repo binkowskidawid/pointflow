@@ -4,7 +4,7 @@ import { CardTier } from '../enums'
 export class CreateLoyaltyCardDto {
   @IsUUID()
   @IsNotEmpty()
-  userId!: string
+  customerId!: string
 
   @IsUUID()
   @IsNotEmpty()

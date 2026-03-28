@@ -12,7 +12,7 @@ export class CardsService {
   async createCard(dto: CreateLoyaltyCardDto): Promise<LoyaltyCard> {
     return await this.cardsRepository.create({
       id: randomUUID(),
-      userId: dto.userId,
+      customerId: dto.customerId,
       tenantId: dto.tenantId,
       pointsBalance: dto.pointsBalance || 0,
       code: dto.code || generateLoyaltyCardCode(dto.tenantId),

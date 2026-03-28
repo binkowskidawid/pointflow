@@ -3,7 +3,7 @@ import type { Currency } from '../enums/currency.enum'
 export interface PointsAwardedEvent {
   eventId: string
   tenantId: string
-  userId: string
+  customerId: string
   cardId: string
   cardCode: string
   visitId: string

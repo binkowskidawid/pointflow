@@ -8,7 +8,7 @@ export interface PromotionSnapshot {
 
 export interface Visit {
   id: string
-  userId: string
+  customerId: string
   tenantId: string
   cardId: string
   cardCode: string

@@ -1,6 +1,6 @@
 CREATE TABLE "visits" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"user_id" uuid NOT NULL,
+	"customer_id" uuid NOT NULL,
 	"tenant_id" uuid NOT NULL,
 	"card_id" uuid NOT NULL,
 	"card_code" varchar(20) NOT NULL,
@@ -15,11 +15,21 @@ CREATE TABLE "visits" (
 --> statement-breakpoint
 CREATE TABLE "loyalty_cards" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"user_id" uuid NOT NULL,
+	"customer_id" uuid NOT NULL,
 	"tenant_id" uuid NOT NULL,
 	"code" varchar(20) NOT NULL,
 	"points_balance" integer DEFAULT 0 NOT NULL,
 	"tier" varchar(20) DEFAULT 'BRONZE' NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE "customers" (
+	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"tenant_id" uuid NOT NULL,
+	"name" varchar(255) NOT NULL,
+	"phone_number" varchar(20) NOT NULL,
+	"email" varchar(255),
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
@@ -31,7 +41,7 @@ CREATE TABLE "users" (
 	"password_hash" varchar(255) NOT NULL,
 	"phone_number" varchar(20),
 	"name" varchar(255) NOT NULL,
-	"role" varchar(50) DEFAULT 'CUSTOMER' NOT NULL,
+	"role" varchar(50) DEFAULT 'RECEPTIONIST' NOT NULL,
 	"two_factor_secret" varchar(255),
 	"two_factor_enabled" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -57,10 +67,14 @@ CREATE TABLE "loyalty_settings" (
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
+ALTER TABLE "visits" ADD CONSTRAINT "visits_customer_id_customers_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "visits" ADD CONSTRAINT "visits_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "loyalty_cards" ADD CONSTRAINT "loyalty_cards_customer_id_customers_id_fk" FOREIGN KEY ("customer_id") REFERENCES "public"."customers"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "loyalty_cards" ADD CONSTRAINT "loyalty_cards_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "customers" ADD CONSTRAINT "customers_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "users" ADD CONSTRAINT "users_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "loyalty_settings" ADD CONSTRAINT "loyalty_settings_tenant_id_tenants_id_fk" FOREIGN KEY ("tenant_id") REFERENCES "public"."tenants"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-CREATE UNIQUE INDEX "user_tenant_idx" ON "loyalty_cards" USING btree ("user_id","tenant_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "customer_tenant_idx" ON "loyalty_cards" USING btree ("customer_id","tenant_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "code_tenant_idx" ON "loyalty_cards" USING btree ("code","tenant_id");--> statement-breakpoint
+CREATE UNIQUE INDEX "customer_phone_tenant_idx" ON "customers" USING btree ("phone_number","tenant_id");--> statement-breakpoint
 CREATE UNIQUE INDEX "user_email_tenant_idx" ON "users" USING btree ("email","tenant_id");

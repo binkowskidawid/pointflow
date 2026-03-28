@@ -4,6 +4,7 @@ import { KAFKA_TOPICS, PointsAwardedEvent, UserCreatedEvent } from '@pointflow/c
 import { MailerService } from '@nestjs-modules/mailer'
 import { getPointsAwardedEmailHtml, getWelcomeEmailHtml } from '../mails'
 import { UsersRepository } from '../users/users.repository'
+import { CustomersRepository } from '../customers/customers.repository'
 
 @Controller()
 export class NotificationsController {
@@ -12,27 +13,30 @@ export class NotificationsController {
   constructor(
     private readonly mailerService: MailerService,
     private readonly usersRepository: UsersRepository,
+    private readonly customersRepository: CustomersRepository,
   ) {}
 
   @EventPattern(KAFKA_TOPICS.POINTS_AWARDED)
   async handlePointsAwarded(@Payload() data: PointsAwardedEvent) {
-    const user = await this.usersRepository.findById(data.userId)
+    const customer = await this.customersRepository.findById(data.customerId)
 
-    if (!user || !user.email) {
-      this.logger.warn(`User ${data.userId} not found yet. Retrying via Kafka mechanism...`)
-      throw new Error(`User ${data.userId} not found for notification`)
+    if (!customer?.email) {
+      this.logger.warn(
+        `Customer ${data.customerId} has no email address. Skipping points awarded notification.`,
+      )
+      return
     }
 
     this.mailerService
       .sendMail({
-        to: user.email,
+        to: customer.email,
         subject: '🎉 New points on your account!',
         html: getPointsAwardedEmailHtml(data),
       })
       .then(() => {
-        this.logger.log(`PointsAwarded email sent to ${user.email}`)
+        this.logger.log(`PointsAwarded email sent to ${customer.email}`)
       })
-      .catch((err) => this.logger.error(`Error sending email to ${user.email}:`, err))
+      .catch((err) => this.logger.error(`Error sending email to ${customer.email}:`, err))
   }
 
   @EventPattern(KAFKA_TOPICS.USER_CREATED)

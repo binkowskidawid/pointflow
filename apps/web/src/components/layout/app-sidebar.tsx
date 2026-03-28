@@ -10,6 +10,7 @@ import { Separator } from '@/components/ui/separator'
 import { navItems } from '@/constants'
 import { authApi } from '@/lib/api/auth'
 import { cn } from '@/lib/utils'
+import { useAuthSession } from '@/lib/auth/session'
 
 type NavItem = {
   label: string
@@ -44,6 +45,8 @@ function NavLink({ item }: { item: NavItem }) {
 
 export function AppSidebar() {
   const router = useRouter()
+  const { user } = useAuthSession()
+
   const [isLoggingOut, setIsLoggingOut] = useState(false)
 
   const handleLogout = async () => {
@@ -88,6 +91,9 @@ export function AppSidebar() {
       <Separator />
 
       <div className="flex flex-col gap-1 px-3 py-4">
+        <p className="mb-0.5 text-center text-xs font-bold text-white/80">
+          Signed in as: {user?.name ?? user?.email ?? 'Unknown User'}
+        </p>
         <Button
           size="sm"
           className="w-full cursor-pointer"
@@ -98,6 +104,9 @@ export function AppSidebar() {
         >
           {isLoggingOut ? 'Logging out...' : 'Logout'}
         </Button>
+        <p className="mt-2 text-center text-xs text-zinc-500">
+          &copy; {new Date().getFullYear()} PointFlow. All rights reserved.
+        </p>
       </div>
     </aside>
   )

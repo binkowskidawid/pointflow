@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { CheckCardView } from './check-card-view'
+import { CheckCardView } from '../../../../components/cards/check/check-card-view'
 
 export const metadata: Metadata = {
   title: 'Check Card',

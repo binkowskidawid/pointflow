@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { RegisterVisitView } from './register-visit-view'
+import { RegisterVisitView } from '../../../../components/visits/new/register-visit-view'
 
 export const metadata: Metadata = {
   title: 'Register Visit',

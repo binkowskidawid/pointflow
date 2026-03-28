@@ -1,10 +1,14 @@
 import { pgTable, uuid, varchar, integer, jsonb, timestamp } from 'drizzle-orm/pg-core'
 import type { PromotionSnapshot } from '@pointflow/types'
+import { customers } from './customers.schema'
 import { tenants } from './tenants.schema'
 
 export const visits = pgTable('visits', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').notNull(),
+  // customerId — loyalty card holder (customer, not staff)
+  customerId: uuid('customer_id')
+    .notNull()
+    .references(() => customers.id, { onDelete: 'cascade' }),
   tenantId: uuid('tenant_id')
     .notNull()
     .references(() => tenants.id, { onDelete: 'cascade' }),

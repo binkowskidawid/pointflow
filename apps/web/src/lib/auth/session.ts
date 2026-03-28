@@ -6,10 +6,13 @@ import { API_ROUTES } from '@/lib/api-routes'
 
 export type AuthSession = Omit<LoginResponseDto, 'refreshToken'>
 export type AuthStatus = 'checking' | 'authenticated' | 'anonymous'
-export type LoginCredentials = Pick<LoginDto, 'email' | 'password' | 'tenantId'>
+export type LoginCredentials = Pick<LoginDto, 'identifier' | 'password' | 'tenantId'>
+
+export type AuthUser = LoginResponseDto['user']
 
 type AuthState = {
   accessToken: string | null
+  user: AuthUser | null
   status: AuthStatus
 }
 
@@ -18,6 +21,7 @@ const AUTH_BASE_URL = `${API_GATEWAY_URL}/api/v1`
 
 let authState: AuthState = {
   accessToken: null,
+  user: null,
   status: 'checking',
 }
 let refreshPromise: Promise<AuthSession | null> | null = null
@@ -40,12 +44,12 @@ export function getAuthStatus(): AuthStatus {
   return authState.status
 }
 
-export function setSession(accessToken: string): void {
-  setAuthState({ accessToken, status: 'authenticated' })
+export function setSession(accessToken: string, user?: AuthUser): void {
+  setAuthState({ accessToken, user: user ?? authState.user, status: 'authenticated' })
 }
 
 export function clearSession(): void {
-  setAuthState({ accessToken: null, status: 'anonymous' })
+  setAuthState({ accessToken: null, user: null, status: 'anonymous' })
 }
 
 export function subscribeToAuthState(listener: () => void): () => void {
@@ -71,7 +75,7 @@ async function parseSessionResponse(response: Response): Promise<AuthSession | n
   }
 
   const session = (await response.json()) as AuthSession
-  setSession(session.accessToken)
+  setSession(session.accessToken, session.user)
   return session
 }
 
@@ -106,7 +110,11 @@ export async function refreshSession(): Promise<AuthSession | null> {
 
 export async function bootstrapSession(): Promise<void> {
   if (authState.accessToken) {
-    setAuthState({ accessToken: authState.accessToken, status: 'authenticated' })
+    setAuthState({
+      accessToken: authState.accessToken,
+      user: authState.user,
+      status: 'authenticated',
+    })
     return
   }
 

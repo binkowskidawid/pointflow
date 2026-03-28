@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Loader2, LogIn } from 'lucide-react'
 import { toast } from 'sonner'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -14,18 +17,41 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { PasswordInput } from '@/components/ui/password-input'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
 import { authApi } from '@/lib/api/auth'
 import { DEMO_TENANT_ID } from '@/constants'
 import { useAuthSession } from '@/lib/auth/session'
+import { getApiErrorMessage } from '@/lib/get-api-error-message'
+
+const loginSchema = z.object({
+  identifier: z.string().min(1, 'Please enter your email or phone number'),
+  password: z.string().min(1, 'Password is required'),
+  tenantId: z.uuid('Please enter a valid Tenant ID (UUID)'),
+})
+
+type LoginFormValues = z.infer<typeof loginSchema>
 
 export default function LoginPage() {
   const router = useRouter()
   const { status } = useAuthSession()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [tenantId, setTenantId] = useState(DEMO_TENANT_ID)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      identifier: '',
+      password: '',
+      tenantId: DEMO_TENANT_ID,
+    },
+  })
 
   useEffect(() => {
     if (status === 'authenticated') {
@@ -33,16 +59,15 @@ export default function LoginPage() {
     }
   }, [router, status])
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault()
+  async function onSubmit(values: LoginFormValues) {
     setIsSubmitting(true)
 
     try {
-      await authApi.login({ email, password, tenantId })
+      await authApi.login(values)
       toast.success('Signed in successfully')
       router.replace('/')
-    } catch {
-      toast.error('Login failed. Check email, password and tenant ID.')
+    } catch (error) {
+      toast.error(getApiErrorMessage(error, 'Login failed. Check your credentials.'))
     } finally {
       setIsSubmitting(false)
     }
@@ -56,58 +81,76 @@ export default function LoginPage() {
           Refresh token lives in an HttpOnly cookie, access token stays in memory only.
         </CardDescription>
       </CardHeader>
-      <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="tenantId">Tenant ID</Label>
-            <Input
-              id="tenantId"
-              value={tenantId}
-              onChange={(event) => setTenantId(event.target.value)}
-              placeholder="Tenant UUID"
-              autoComplete="organization"
-              required
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardContent className="space-y-4">
+            <FormField
+              control={form.control}
+              name="tenantId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tenant ID</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Tenant UUID" autoComplete="organization" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="name@company.com"
-              autoComplete="email"
-              required
+            <FormField
+              control={form.control}
+              name="identifier"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email or Phone</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="name@company.com or 123456789"
+                      autoComplete="username"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              required
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <PasswordInput
+                      placeholder="••••••••"
+                      autoComplete="current-password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          </div>
-        </CardContent>
+          </CardContent>
 
-        <CardFooter>
-          <Button type="submit" className="w-full" disabled={isSubmitting || status === 'checking'}>
-            {isSubmitting ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <LogIn className="h-4 w-4" />
-            )}
-            Sign in
-          </Button>
-        </CardFooter>
-      </form>
+          <CardFooter className="flex flex-col gap-3">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isSubmitting || status === 'checking'}
+            >
+              {isSubmitting ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <LogIn className="h-4 w-4" />
+              )}
+              Sign in
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   )
 }

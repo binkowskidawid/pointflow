@@ -1,4 +1,5 @@
 /// <reference types="node" />
+import 'reflect-metadata'
 import { defineConfig } from 'drizzle-kit'
 
 export default defineConfig({
