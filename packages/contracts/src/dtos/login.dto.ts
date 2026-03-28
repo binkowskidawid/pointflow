@@ -1,16 +1,19 @@
 import { Type } from 'class-transformer'
-import { IsEmail, IsNotEmpty, IsString, ValidateNested } from 'class-validator'
+import { IsEmail, IsNotEmpty, IsString, IsUUID, MaxLength, ValidateNested } from 'class-validator'
 
 export class LoginDto {
-  @IsEmail({}, { message: 'Invalid email address' })
-  email!: string
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(255)
+  identifier!: string // email or phoneNumber
 
   @IsNotEmpty()
   @IsString()
+  @MaxLength(128)
   password!: string
 
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   tenantId!: string
 }
 

@@ -6,7 +6,7 @@ export const API_ROUTES = {
     PING: '/loyalty/ping',
   },
   AUTH: {
-    REGISTER: '/auth/register',
+    CREATE_STAFF: '/auth/register',
     LOGIN: '/auth/login',
     REFRESH: '/auth/refresh',
     LOGOUT: '/auth/logout',

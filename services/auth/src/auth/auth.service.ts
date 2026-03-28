@@ -1,7 +1,22 @@
-import { Inject, Injectable, Logger, UnauthorizedException } from '@nestjs/common'
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common'
 import { AuthRepository } from './auth.repository'
 import { ClientKafka } from '@nestjs/microservices'
-import { type CreateUserDto, KAFKA_TOPICS, LoginDto, LoginResponseDto } from '@pointflow/contracts'
+import {
+  type AssignableStaffRole,
+  ASSIGNABLE_STAFF_ROLES,
+  type CreateUserDto,
+  KAFKA_TOPICS,
+  LoginDto,
+  LoginResponseDto,
+  UserRole,
+} from '@pointflow/contracts'
 import type { User } from '@pointflow/types'
 import * as bcrypt from 'bcrypt'
 import { JwtService } from '@nestjs/jwt'
@@ -37,11 +52,23 @@ export class AuthService {
   }
 
   async register(data: CreateUserDto): Promise<Omit<User, 'passwordHash'>> {
+    const existing = await this.authRepository.findByEmail({
+      email: data.email,
+      tenantId: data.tenantId,
+    })
+
+    if (existing) {
+      throw new ConflictException('User with this email already exists in this tenant')
+    }
+
     const hash = await bcrypt.hash(data.password, 10)
+
+    const assignedRole = this.resolveStaffRole(data.role)
 
     const registeredUser = await this.authRepository.register({
       ...data,
       passwordHash: hash,
+      role: assignedRole,
     })
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,8 +90,11 @@ export class AuthService {
   }
 
   async login(data: LoginDto): Promise<LoginResponseDto> {
-    const user = await this.authRepository.findByEmail({
-      email: data.email,
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.identifier)
+    const identifier = isEmail ? data.identifier : data.identifier.replace(/\D/g, '').slice(-9)
+
+    const user = await this.authRepository.findByIdentifier({
+      identifier,
       tenantId: data.tenantId,
     })
 
@@ -138,6 +168,14 @@ export class AuthService {
       name: user.name || '',
       tenantId: user.tenantId,
     }
+  }
+
+  private resolveStaffRole(role: AssignableStaffRole | undefined): UserRole {
+    if (!role) return UserRole.RECEPTIONIST
+    if (!(ASSIGNABLE_STAFF_ROLES as readonly UserRole[]).includes(role)) {
+      throw new BadRequestException(`Role '${role}' cannot be assigned via registration`)
+    }
+    return role
   }
 
   private verifyRefreshToken(refreshToken: string): RefreshTokenPayload {

@@ -1,10 +1,14 @@
 import { pgTable, uuid, varchar, integer, jsonb, timestamp } from 'drizzle-orm/pg-core'
 import type { PromotionSnapshot } from '@pointflow/types'
+import { customers } from './customers.schema'
 import { tenants } from './tenants.schema'
 
 export const visits = pgTable('visits', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').notNull(),
+  // customerId — loyalty card holder (customer, not staff)
+  customerId: uuid('customer_id')
+    .notNull()
+    .references(() => customers.id, { onDelete: 'cascade' }),
   tenantId: uuid('tenant_id')
     .notNull()
     .references(() => tenants.id, { onDelete: 'cascade' }),
@@ -16,6 +20,8 @@ export const visits = pgTable('visits', {
   pointsEarned: integer('points_earned').notNull(),
   // PromotionSnapshot frozen at transaction time — immutable history
   appliedRuleSnapshot: jsonb('applied_rule_snapshot').$type<PromotionSnapshot>().notNull(),
+
+  registeredByUserId: uuid('registered_by_user_id').notNull(),
   occurredAt: timestamp('occurred_at', { withTimezone: true }).notNull(),
   createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),

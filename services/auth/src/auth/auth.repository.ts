@@ -4,7 +4,7 @@ import type * as schema from '@pointflow/drizzle-schemas'
 import { InsertUser, users } from '@pointflow/drizzle-schemas'
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import type { User } from '@pointflow/types'
-import { and, eq } from 'drizzle-orm'
+import { and, eq, or } from 'drizzle-orm'
 
 @Injectable()
 export class AuthRepository {
@@ -14,6 +14,25 @@ export class AuthRepository {
     const [registeredUser] = await this.db.insert(users).values(data).returning()
 
     return registeredUser as unknown as User
+  }
+
+  async findByIdentifier({
+    identifier,
+    tenantId,
+  }: {
+    identifier: string
+    tenantId: string
+  }): Promise<User | null> {
+    const [found] = await this.db
+      .select()
+      .from(users)
+      .where(
+        and(
+          eq(users.tenantId, tenantId),
+          or(eq(users.email, identifier), eq(users.phoneNumber, identifier)),
+        ),
+      )
+    return found ? (found as User) : null
   }
 
   async findByEmail({

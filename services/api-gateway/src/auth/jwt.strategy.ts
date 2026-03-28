@@ -2,14 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
-
-function getRequiredEnv(name: string, value: string | undefined): string {
-  if (!value) {
-    throw new Error(`${name} is not configured`)
-  }
-
-  return value
-}
+import { getRequiredEnv } from '@pointflow/utils'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

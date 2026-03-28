@@ -1,5 +1,5 @@
 {
-  "id": "e6851117-61f4-4560-82e8-112f3fc89d2c",
+  "id": "ca057c38-78f5-478c-a3d1-26fa80f21ec5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -15,8 +15,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
+        "customer_id": {
+          "name": "customer_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -63,6 +63,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "registered_by_user_id": {
+          "name": "registered_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
         "occurred_at": {
           "name": "occurred_at",
           "type": "timestamp with time zone",
@@ -86,6 +92,19 @@
       },
       "indexes": {},
       "foreignKeys": {
+        "visits_customer_id_customers_id_fk": {
+          "name": "visits_customer_id_customers_id_fk",
+          "tableFrom": "visits",
+          "tableTo": "customers",
+          "columnsFrom": [
+            "customer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "visits_tenant_id_tenants_id_fk": {
           "name": "visits_tenant_id_tenants_id_fk",
           "tableFrom": "visits",
@@ -117,8 +136,8 @@
           "notNull": true,
           "default": "gen_random_uuid()"
         },
-        "user_id": {
-          "name": "user_id",
+        "customer_id": {
+          "name": "customer_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -165,11 +184,11 @@
         }
       },
       "indexes": {
-        "user_tenant_idx": {
-          "name": "user_tenant_idx",
+        "customer_tenant_idx": {
+          "name": "customer_tenant_idx",
           "columns": [
             {
-              "expression": "user_id",
+              "expression": "customer_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -209,9 +228,116 @@
         }
       },
       "foreignKeys": {
+        "loyalty_cards_customer_id_customers_id_fk": {
+          "name": "loyalty_cards_customer_id_customers_id_fk",
+          "tableFrom": "loyalty_cards",
+          "tableTo": "customers",
+          "columnsFrom": [
+            "customer_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
         "loyalty_cards_tenant_id_tenants_id_fk": {
           "name": "loyalty_cards_tenant_id_tenants_id_fk",
           "tableFrom": "loyalty_cards",
+          "tableTo": "tenants",
+          "columnsFrom": [
+            "tenant_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.customers": {
+      "name": "customers",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "tenant_id": {
+          "name": "tenant_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "phone_number": {
+          "name": "phone_number",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "customer_phone_tenant_idx": {
+          "name": "customer_phone_tenant_idx",
+          "columns": [
+            {
+              "expression": "phone_number",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "tenant_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "customers_tenant_id_tenants_id_fk": {
+          "name": "customers_tenant_id_tenants_id_fk",
+          "tableFrom": "customers",
           "tableTo": "tenants",
           "columnsFrom": [
             "tenant_id"
@@ -275,7 +401,7 @@
           "type": "varchar(50)",
           "primaryKey": false,
           "notNull": true,
-          "default": "'CUSTOMER'"
+          "default": "'RECEPTIONIST'"
         },
         "two_factor_secret": {
           "name": "two_factor_secret",

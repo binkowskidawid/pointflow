@@ -1,12 +1,15 @@
 import { pgTable, uuid, integer, varchar, timestamp, uniqueIndex } from 'drizzle-orm/pg-core'
 import { CardTier } from '@pointflow/contracts'
 import { tenants } from './tenants.schema'
+import { customers } from './customers.schema'
 
 export const loyaltyCards = pgTable(
   'loyalty_cards',
   {
     id: uuid('id').defaultRandom().primaryKey(),
-    userId: uuid('user_id').notNull(),
+    customerId: uuid('customer_id')
+      .notNull()
+      .references(() => customers.id, { onDelete: 'cascade' }),
     tenantId: uuid('tenant_id')
       .notNull()
       .references(() => tenants.id, { onDelete: 'cascade' }),
@@ -18,7 +21,7 @@ export const loyaltyCards = pgTable(
   },
   (table) => {
     return [
-      uniqueIndex('user_tenant_idx').on(table.userId, table.tenantId),
+      uniqueIndex('customer_tenant_idx').on(table.customerId, table.tenantId),
       uniqueIndex('code_tenant_idx').on(table.code, table.tenantId),
     ]
   },

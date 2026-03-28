@@ -33,7 +33,7 @@ export class VisitsService {
 
     const visit = await this.visitsRepository.create({
       id: randomUUID(),
-      userId: card.userId,
+      customerId: card.customerId,
       tenantId: card.tenantId,
       cardId: card.id,
       cardCode: card.code,
@@ -41,6 +41,7 @@ export class VisitsService {
       currency: dto.receiptCurrency,
       pointsEarned,
       appliedRuleSnapshot: DEFAULT_PROMOTION,
+      registeredByUserId: dto.registeredByUserId,
       occurredAt: new Date(),
     })
 
@@ -49,7 +50,7 @@ export class VisitsService {
     this.kafkaClient.emit(KAFKA_TOPICS.POINTS_AWARDED, {
       eventId: randomUUID(),
       tenantId: visit.tenantId,
-      userId: visit.userId,
+      customerId: visit.customerId,
       cardId: visit.cardId,
       cardCode: visit.cardCode,
       visitId: visit.id,

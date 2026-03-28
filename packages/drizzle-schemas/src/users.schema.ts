@@ -13,7 +13,7 @@ export const users = pgTable(
     passwordHash: varchar('password_hash', { length: 255 }).notNull(),
     phoneNumber: varchar('phone_number', { length: 20 }),
     name: varchar('name', { length: 255 }).notNull(),
-    role: varchar('role', { length: 50 }).notNull().default(UserRole.CUSTOMER),
+    role: varchar('role', { length: 50 }).notNull().default(UserRole.RECEPTIONIST),
     twoFactorSecret: varchar('two_factor_secret', { length: 255 }),
     twoFactorEnabled: boolean('two_factor_enabled').default(false).notNull(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),

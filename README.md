@@ -23,7 +23,7 @@ PointFlow is a free, open-source, self-hostable loyalty platform for small and m
 - 🔔 **Real-time Notifications** — email alerts on points earned and tier changes
 - 📊 **Analytics Dashboard** — visit history, point balances, and tier distribution
 - 👤 **Customer Portal** — self-service portal for customers to track their rewards
-- 🔐 **JWT Auth** — stateless authentication with per-tenant isolation
+- 🔐 **JWT Auth** — stateless authentication with per-tenant isolation and role-based staff access
 - 🐘 **Event-Driven Core** — built on Apache Kafka 4.2 KRaft (no Zookeeper!)
 - 🚀 **Self-hosted** — single `docker compose up` to run the entire stack
 
@@ -34,7 +34,7 @@ Browser (Next.js 16)
         │ HTTPS + JWT
         ▼
   API Gateway (NestJS 11, port 3001)
-  ├── Auth Service    (TCP, port 3003)
+  ├── Auth Service    (TCP, port 3003)  ──► JWT, refresh tokens, RBAC
   ├── Loyalty Engine  (TCP, port 3002)  ──► Kafka 4.2 KRaft
   └── Analytics       (HTTP + Kafka, port 3004)
                                               │
@@ -180,6 +180,7 @@ pnpm run dev
 - [x] **Stage 2** — Notifications Service (Kafka Consumer)
 - [x] **Stage 2** — Auth Service (Registration Flow & Validation)
 - [x] **Stage 2** — Auth Service (Login & JWT Tokens + Frontend Auth Flow)
+- [x] **Stage 2** — Auth Service (RBAC + tenant-aware dashboard flows)
 - [ ] **Stage 3** — Analytics Service + Customer Portal
 - [ ] **Stage 3** — v1.0.0 release with `quickstart.sh`
 - [ ] **Stage 4** — WebSockets real-time dashboard

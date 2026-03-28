@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectDatabase } from '../database/database.decorator'
-import { InsertLoyaltyCard, loyaltyCards, users } from '@pointflow/drizzle-schemas'
+import { InsertLoyaltyCard, loyaltyCards, customers } from '@pointflow/drizzle-schemas'
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js'
 import type * as schema from '@pointflow/drizzle-schemas'
 import type { LoyaltyCard } from '@pointflow/types'
@@ -53,19 +53,27 @@ export class CardsRepository {
     const isPhone = /^\+?[\d\s-]+$/.test(phoneOrEmail)
     const normalized = isPhone ? phoneOrEmail.replace(/\s/g, '').slice(-9) : phoneOrEmail
 
-    const [user] = await this.db
+    const [customer] = await this.db
       .select()
-      .from(users)
-      .where(or(eq(users.email, phoneOrEmail), sql`RIGHT(${users.phoneNumber}, 9) = ${normalized}`))
+      .from(customers)
+      .where(
+        and(
+          eq(customers.tenantId, tenantId),
+          or(
+            eq(customers.email, phoneOrEmail),
+            sql`RIGHT(${customers.phoneNumber}, 9) = ${normalized}`,
+          ),
+        ),
+      )
 
-    if (!user) {
+    if (!customer) {
       return null
     }
 
     const [card] = await this.db
       .select()
       .from(loyaltyCards)
-      .where(and(eq(loyaltyCards.userId, user.id), eq(loyaltyCards.tenantId, tenantId)))
+      .where(and(eq(loyaltyCards.customerId, customer.id), eq(loyaltyCards.tenantId, tenantId)))
 
     return (card as unknown as LoyaltyCard) || null
   }

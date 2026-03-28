@@ -76,18 +76,22 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Login Page** (`apps/web/src/app/(auth)/login/page.tsx`): Full login form with `tenantId`, `email`, `password`. On success: `setSession(accessToken)` + `router.replace('/')`.
 - **AuthGate component**: Client component that reads auth state and redirects unauthenticated users to `/login`. Used in `(dashboard)/layout.tsx` to protect all dashboard routes.
 - **AuthBootstrapper component**: Fires `bootstrapSession()` on app mount — restores JWT session from HttpOnly cookie without user interaction.
+- **RolesGuard** and `@Roles()` in the API Gateway for role-based access control on staff-only routes.
+- **Staff Access UI**: Added dashboard screens for managing access, including `/settings/users/new`.
+- **Tenant-Aware Flow**: Kept `tenantId` consistent across login, visit registration, and card lookup screens.
 
 ### Fixed
 
 - **DTO Validation Support**: Enabled `experimentalDecorators` and `emitDecoratorMetadata` in `packages/contracts/tsconfig.json` to support `class-validator` in the shared package.
 - **UUID Parsing Errors**: Resolved `RpcExceptionsHandler` errors where identifiers (phone/code) were incorrectly treated as UUIDs by the database.
 - **Frontend Loading State**: Resolved `UND_ERR_HEADERS_TIMEOUT` by correcting API URLs and mapping to the new API Gateway port.
-- **Frontend Loading State**: Resolved `UND_ERR_HEADERS_TIMEOUT` by correcting API URLs and mapping to the new API Gateway port.
 - **Microservices Routing**: Fixed 404 errors by properly registering controllers in the Gateway's `LoyaltyModule`.
 - **Logger Wildcards**: Updated `nestjs-pino` configuration to support Express 5.0 route path syntax.
 - **Kafka Topic Syntax Issues**: Addressed `INVALID_TOPIC_EXCEPTION` by updating string message patterns in `@pointflow/contracts` to avoid colons (`:`) resulting in safe "dot" notations (e.g. `loyalty.visit.create`).
 - **Conflict of Kafka ClientIDs**: Established distinct Kafka Client IDs per server connection by separating standard `-client` and `-server` suffixes defined in environment configuration to avoid internal connection resets.
 - **Unique Constraint Restarts (Poison Pills)**: Demonstrated KafkaJS robust error recovery — correctly processing automatic retries and delaying restarts upon catching Drizzle DB `UNIQUE KEY` exceptions, instead of silently dropping data.
+- **Logout Flow Stability**: Improved logout error handling and loading state so failed logouts do not trigger false-positive redirects.
+- **Gateway Logout Guarding**: Prevented empty logout responses from surfacing as `EmptyError` in `POST /auth/logout`.
 - `packages/drizzle-schemas` build output: included `rootDir` and corrected `package.json` exports to support both ESM and CJS NestJS runtime requirements
 - CockroachDB/Drizzle compatibility: switched from `drizzle-kit push` to file-based migrations via `postgres.js` to avoid `regtype[]` parsing errors during DB introspection
 - `vitest` CI stability: added `--passWithNoTests` flag to prevent job failures in packages without test files
@@ -103,6 +107,9 @@ PointFlow adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Toolchain Upgrade**: Updated ESLint to v10, `typescript-eslint` to v8.56.1, and `turbo` to v2.8.14 across the workspace.
 - **Security**: Moved from using `root` database user to a dedicated `pointflow_user` with restricted permissions.
 - **Node.js Types**: Enforced `@types/node` at `^24.x` to strictly match the Node.js 24 LTS runtime strategy.
+- **Auth UX**: Reworked logout and navigation state to use sidebar-based logout instead of bottom navigation items.
+- **Tenant Context**: Refined `tenantId` handling in login, card lookup, and visit registration flows to keep tenant-scoped data consistent.
+- **RBAC Flow**: Introduced role-aware auth state and guarded staff management routes in the gateway and frontend.
 
 ---
 

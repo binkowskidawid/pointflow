@@ -8,7 +8,7 @@ export interface PromotionSnapshot {
 
 export interface Visit {
   id: string
-  userId: string
+  customerId: string
   tenantId: string
   cardId: string
   cardCode: string
@@ -16,6 +16,7 @@ export interface Visit {
   currency: Currency
   pointsEarned: number
   appliedRuleSnapshot: PromotionSnapshot
+  registeredByUserId: string
   occurredAt: Date
   createdAt: Date
   updatedAt: Date

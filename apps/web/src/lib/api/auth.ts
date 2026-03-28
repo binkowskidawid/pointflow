@@ -7,17 +7,17 @@ import { logoutSession, setSession } from '@/lib/auth/session'
 type PublicLoginResponse = Omit<LoginResponseDto, 'refreshToken'>
 
 export const authApi = {
-  /**
-   * User: register a new user.
-   */
-  register: async (dto: CreateUserDto): Promise<Omit<User, 'passwordHash'>> => {
-    const { data } = await apiClient.post<Omit<User, 'passwordHash'>>(API_ROUTES.AUTH.REGISTER, dto)
+  createStaff: async (dto: CreateUserDto): Promise<Omit<User, 'passwordHash'>> => {
+    const { data } = await apiClient.post<Omit<User, 'passwordHash'>>(
+      API_ROUTES.AUTH.CREATE_STAFF,
+      dto,
+    )
     return data
   },
 
   login: async (dto: LoginDto): Promise<PublicLoginResponse> => {
     const { data } = await apiClient.post<PublicLoginResponse>(API_ROUTES.AUTH.LOGIN, dto)
-    setSession(data.accessToken)
+    setSession(data.accessToken, data.user)
     return data
   },
 
@@ -25,9 +25,11 @@ export const authApi = {
     await logoutSession()
   },
 
-  /**
-   * System: ping auth service.
-   */
+  me: async (): Promise<LoginResponseDto['user']> => {
+    const { data } = await apiClient.get<LoginResponseDto['user']>(API_ROUTES.AUTH.ME)
+    return data
+  },
+
   pingAuthService: async (): Promise<string> => {
     const { data } = await apiClient.get<string>(API_ROUTES.AUTH.PING)
     return data

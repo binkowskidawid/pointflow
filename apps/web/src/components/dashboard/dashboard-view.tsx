@@ -5,7 +5,7 @@ import { Activity, CreditCard, TrendingUp, Users } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { visitsApi } from '@/lib/api/visits'
-import { DEMO_TENANT_ID } from '@/constants'
+import { useAuthSession } from '@/lib/auth/session'
 
 function StatCard({
   title,
@@ -70,14 +70,16 @@ function RecentVisitSkeleton() {
 }
 
 export function DashboardView() {
+  const { user } = useAuthSession()
   const {
     data: visits = [],
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: ['dashboard', 'tenant-visits', DEMO_TENANT_ID],
-    queryFn: () => visitsApi.getByTenant(DEMO_TENANT_ID),
+    queryKey: ['dashboard', 'tenant-visits', user?.tenantId],
+    queryFn: () => visitsApi.getByTenant(user!.tenantId),
+    enabled: Boolean(user?.tenantId),
     staleTime: 30_000,
     retry: 1,
   })

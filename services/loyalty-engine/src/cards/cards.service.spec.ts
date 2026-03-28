@@ -24,7 +24,7 @@ describe('CardsService', () => {
 
   const mockCard: LoyaltyCard = {
     id: 'uuid-1234-5678-abcd-efgh',
-    userId: 'user123',
+    customerId: 'customer123',
     tenantId: 'tenant123',
     pointsBalance: 0,
     code: 'T12312345678',
@@ -49,13 +49,13 @@ describe('CardsService', () => {
     mockGenerateCode.mockReturnValue('T12312345678')
     mockRepo.create.mockResolvedValue(mockCard)
 
-    const dto: CreateLoyaltyCardDto = { userId: 'user123', tenantId: 'tenant123' }
+    const dto: CreateLoyaltyCardDto = { customerId: 'customer123', tenantId: 'tenant123' }
 
     await service.createCard(dto)
 
     expect(mockRepo.create).toHaveBeenCalledWith(
       expect.objectContaining({
-        userId: 'user123',
+        customerId: 'customer123',
         tenantId: 'tenant123',
         pointsBalance: 0,
         code: 'T12312345678',
@@ -70,7 +70,7 @@ describe('CardsService', () => {
     mockRepo.create.mockResolvedValue(mockCard)
 
     const dto: CreateLoyaltyCardDto = {
-      userId: 'user123',
+      customerId: 'customer123',
       tenantId: 'tenant123',
       code: 'CUSTOM123',
       tier: CardTier.GOLD,
@@ -92,7 +92,7 @@ describe('CardsService', () => {
     it('resolves by code (direct hit)', async () => {
       const mockCodeCard: LoyaltyCard = {
         id: 'uuid-1234-5678-abcd-efgh',
-        userId: 'user123',
+        customerId: 'customer123',
         tenantId: 'tenant123',
         pointsBalance: 0,
         code: 'T12312345678',
@@ -113,7 +113,7 @@ describe('CardsService', () => {
     it('fallback: code null → phone/email → success', async () => {
       const mockUserCard: LoyaltyCard = {
         id: 'uuid-1234-5678-abcd-abcd',
-        userId: 'user321',
+        customerId: 'customer321',
         tenantId: 'tenant321',
         pointsBalance: 1000,
         code: 'T32112345678',

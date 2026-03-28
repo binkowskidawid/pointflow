@@ -11,8 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-
-import { DEMO_TENANT_ID } from '@/constants'
+import { useAuthSession } from '@/lib/auth/session'
 
 type FormState = {
   cardIdentifier: string
@@ -30,6 +29,7 @@ const CURRENCIES = Object.values(Currency)
 
 export function RegisterVisitView() {
   const queryClient = useQueryClient()
+  const { user } = useAuthSession()
   const [form, setForm] = useState<FormState>(INITIAL_FORM)
 
   const {
@@ -70,9 +70,10 @@ export function RegisterVisitView() {
 
     mutate({
       identifier: form.cardIdentifier.trim(),
-      tenantId: DEMO_TENANT_ID,
+      tenantId: user!.tenantId,
       receiptAmount: amountCents,
       receiptCurrency: form.receiptCurrency,
+      registeredByUserId: user!.id,
     })
   }
 

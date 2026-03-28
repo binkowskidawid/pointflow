@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -8,14 +9,18 @@ import {
   Req,
   Res,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { AuthService } from './auth.service'
 import { firstValueFrom, Observable } from 'rxjs'
-import { CreateUserDto, LoginDto, LoginResponseDto } from '@pointflow/contracts'
+import { CreateUserDto, LoginDto, LoginResponseDto, UserRole } from '@pointflow/contracts'
 import type { User } from '@pointflow/types'
+import { parseExpiryToSeconds } from '@pointflow/utils'
 import type { Request, Response } from 'express'
 import { Public } from './public.decorator'
+import { Roles } from './roles.decorator'
+import { RolesGuard } from './roles.guard'
 
 type PublicLoginResponse = Omit<LoginResponseDto, 'refreshToken'>
 type RequestWithUser = Request & {
@@ -24,31 +29,6 @@ type RequestWithUser = Request & {
 
 const REFRESH_COOKIE_NAME = 'pointflow_refresh_token'
 const REFRESH_COOKIE_PATH = '/api/v1/auth'
-
-function parseExpiryToSeconds(value: string): number {
-  const trimmed = value.trim()
-
-  if (/^\d+$/.test(trimmed)) {
-    const seconds = Number.parseInt(trimmed, 10)
-    if (!Number.isFinite(seconds) || seconds <= 0) {
-      throw new Error(`JWT_REFRESH_EXPIRES_IN must be a positive integer, got "${value}"`)
-    }
-    return seconds
-  }
-
-  const match = /^(\d+)([smhd])$/.exec(trimmed)
-  if (!match) {
-    throw new Error(`Invalid JWT_REFRESH_EXPIRES_IN format: "${value}"`)
-  }
-
-  const amount = Number.parseInt(match[1]!, 10)
-  if (!Number.isFinite(amount) || amount <= 0) {
-    throw new Error(`JWT_REFRESH_EXPIRES_IN amount must be a positive integer, got "${value}"`)
-  }
-
-  const units: Record<string, number> = { s: 1, m: 60, h: 3_600, d: 86_400 }
-  return amount * (units[match[2]!] ?? 1)
-}
 
 function parseCookie(headerValue: string | undefined, cookieName: string): string | null {
   if (!headerValue) {
@@ -99,9 +79,22 @@ export class AuthController {
   }
 
   @Post('register')
-  @Public()
   @HttpCode(HttpStatus.CREATED)
-  async register(@Body() dto: CreateUserDto): Promise<User> {
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.OWNER, UserRole.MANAGER, UserRole.SYSTEM_ADMIN)
+  async register(@Body() dto: CreateUserDto, @Req() req: RequestWithUser): Promise<User> {
+    const callerRole = req.user.role as UserRole
+
+    // Tenant isolation — only SYSTEM_ADMIN may create staff across tenants
+    if (callerRole !== UserRole.SYSTEM_ADMIN && req.user.tenantId !== dto.tenantId) {
+      throw new ForbiddenException('Cannot create staff in a different tenant')
+    }
+
+    // Role hierarchy — MANAGER cannot create OWNER
+    if (callerRole === UserRole.MANAGER && dto.role === UserRole.OWNER) {
+      throw new ForbiddenException('MANAGER cannot create an OWNER account')
+    }
+
     return await firstValueFrom(this.authService.register(dto))
   }
 
@@ -145,7 +138,9 @@ export class AuthController {
     const refreshToken = this.readRefreshToken(request)
 
     if (refreshToken) {
-      await firstValueFrom(this.authService.logout(refreshToken))
+      await firstValueFrom(this.authService.logout(refreshToken), {
+        defaultValue: undefined,
+      })
     }
 
     this.clearRefreshTokenCookie(response)
