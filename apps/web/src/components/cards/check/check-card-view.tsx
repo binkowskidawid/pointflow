@@ -18,7 +18,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { DEMO_TENANT_ID } from '@/constants'
+import { useAuthSession } from '@/lib/auth/session'
 
 function VisitsTableSkeleton() {
   return (
@@ -31,6 +31,7 @@ function VisitsTableSkeleton() {
 }
 
 export function CheckCardView() {
+  const { user } = useAuthSession()
   const [cardId, setCardId] = useState('')
   const [submittedCardId, setSubmittedCardId] = useState<string | null>(null)
 
@@ -41,7 +42,7 @@ export function CheckCardView() {
     error,
   } = useQuery({
     queryKey: ['visits', 'card', submittedCardId],
-    queryFn: () => visitsApi.getByCardId(submittedCardId!, DEMO_TENANT_ID),
+    queryFn: () => visitsApi.getByCardId(submittedCardId!, user!.tenantId),
     // Only fetch when we have a submitted card ID
     enabled: Boolean(submittedCardId),
     staleTime: 30_000,

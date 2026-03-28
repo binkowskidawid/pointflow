@@ -7,8 +7,8 @@ export class CreateVisitDto {
   cardId?: string
 
   @IsUUID()
-  @IsOptional()
-  userId?: string
+  @IsNotEmpty()
+  registeredByUserId!: string
 
   @IsUUID()
   @IsNotEmpty()

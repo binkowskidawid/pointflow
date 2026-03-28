@@ -16,6 +16,7 @@ export interface Visit {
   currency: Currency
   pointsEarned: number
   appliedRuleSnapshot: PromotionSnapshot
+  registeredByUserId: string
   occurredAt: Date
   createdAt: Date
   updatedAt: Date

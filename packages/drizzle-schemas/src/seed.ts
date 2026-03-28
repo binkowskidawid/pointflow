@@ -14,14 +14,14 @@ const TENANT_ID_1 = '1d6674c7-4966-49a0-a269-4c46a44cc276'
 const TENANT_ID_2 = '7119b956-a0c0-4683-a2ad-69943139a8f5'
 
 // Staff: one OWNER + one RECEPTIONIST per tenant
-const OWNER_ID_T1 = 'a0000001-0000-0000-0000-000000000001'
-const RECEPTIONIST_ID_T1 = 'a0000001-0000-0000-0000-000000000002'
-const OWNER_ID_T2 = 'a0000002-0000-0000-0000-000000000001'
+const OWNER_ID_T1 = '22d3723e-301e-4643-9aec-e052e4178b71'
+const RECEPTIONIST_ID_T1 = '1f45882d-7b11-403c-92b2-3c19e117d79c'
+const OWNER_ID_T2 = '0817ced3-a1f4-4027-a032-7eb1c5dc18ec'
 
 // Customers (separate from staff)
-const CUSTOMER_ID_1 = 'c0000001-0000-0000-0000-000000000001'
-const CUSTOMER_ID_2 = 'c0000001-0000-0000-0000-000000000002'
-const CUSTOMER_ID_3 = 'c0000002-0000-0000-0000-000000000001'
+const CUSTOMER_ID_1 = 'da377163-6356-48c3-a52a-134621e5d854'
+const CUSTOMER_ID_2 = 'e769010f-b953-4046-8ca4-07148db3fa30'
+const CUSTOMER_ID_3 = '6825cfe2-3d69-4b1b-a4d3-056948941e40'
 
 // ─── DB connection ────────────────────────────────────────────────────────────
 
@@ -176,6 +176,7 @@ async function seed() {
       {
         customerId: CUSTOMER_ID_1,
         tenantId: TENANT_ID_1,
+        registeredByUserId: OWNER_ID_T1,
         cardId: card1.id,
         cardCode: card1.code,
         amountSpent: 15000,
@@ -191,6 +192,7 @@ async function seed() {
       {
         customerId: CUSTOMER_ID_2,
         tenantId: TENANT_ID_1,
+        registeredByUserId: RECEPTIONIST_ID_T1,
         cardId: card2.id,
         cardCode: card2.code,
         amountSpent: 8000,
@@ -206,6 +208,7 @@ async function seed() {
       {
         customerId: CUSTOMER_ID_3,
         tenantId: TENANT_ID_2,
+        registeredByUserId: OWNER_ID_T2,
         cardId: card3.id,
         cardCode: card3.code,
         amountSpent: 32000,

@@ -8,6 +8,7 @@ CREATE TABLE "visits" (
 	"currency" varchar(3) NOT NULL,
 	"points_earned" integer NOT NULL,
 	"applied_rule_snapshot" jsonb NOT NULL,
+	"registered_by_user_id" uuid NOT NULL,
 	"occurred_at" timestamp with time zone NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL

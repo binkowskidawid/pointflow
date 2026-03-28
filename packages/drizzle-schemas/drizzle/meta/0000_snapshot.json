@@ -1,5 +1,5 @@
 {
-  "id": "2e15265a-c2a4-434b-b04d-4c93972b4870",
+  "id": "ca057c38-78f5-478c-a3d1-26fa80f21ec5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -60,6 +60,12 @@
         "applied_rule_snapshot": {
           "name": "applied_rule_snapshot",
           "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "registered_by_user_id": {
+          "name": "registered_by_user_id",
+          "type": "uuid",
           "primaryKey": false,
           "notNull": true
         },

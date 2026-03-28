@@ -27,7 +27,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { authApi } from '@/lib/api/auth'
-import { DEMO_TENANT_ID } from '@/constants'
+import { TENANT_ID } from '@/constants'
 import { useAuthSession } from '@/lib/auth/session'
 import { getApiErrorMessage } from '@/lib/get-api-error-message'
 
@@ -49,7 +49,7 @@ export default function LoginPage() {
     defaultValues: {
       identifier: '',
       password: '',
-      tenantId: DEMO_TENANT_ID,
+      tenantId: TENANT_ID,
     },
   })
 
@@ -84,20 +84,6 @@ export default function LoginPage() {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <CardContent className="space-y-4">
-            <FormField
-              control={form.control}
-              name="tenantId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Tenant ID</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Tenant UUID" autoComplete="organization" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name="identifier"

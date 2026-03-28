@@ -41,6 +41,7 @@ export class VisitsService {
       currency: dto.receiptCurrency,
       pointsEarned,
       appliedRuleSnapshot: DEFAULT_PROMOTION,
+      registeredByUserId: dto.registeredByUserId,
       occurredAt: new Date(),
     })
 
